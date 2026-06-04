@@ -78,3 +78,24 @@ export type ContactSubmission = {
   status: string;
   created_at: string;
 };
+
+export type GuestbookEntry = {
+  id: string;
+  user_id: string;
+  name: string;
+  email: string;
+  message: string;
+  avatar_url: string;
+  status: string;
+  created_at: string;
+};
+
+export type FeedbackSubmission = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  category: string;
+  message: string;
+  status: string;
+  created_at: string;
+};
