@@ -6,7 +6,7 @@ import { Code, Palette, LayoutGrid as Layout, Sparkles, TrendingUp, Zap, Lightbu
 import type { Service } from '@/lib/supabase';
 import Link from 'next/link';
 
-const ICON_MAP: Record<string, React.ElementType> = {
+const ICON_MAP: Record<string, any> = {
   Code, Palette, Layout, Sparkles, TrendingUp, Zap, Lightbulb, Share2
 };
 

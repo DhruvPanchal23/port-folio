@@ -40,10 +40,10 @@ const tools = [
     category: 'Hardware',
     icon: Monitor,
     items: [
-      { name: 'MacBook Pro M2', description: '16-inch, 32GB RAM' },
-      { name: 'LG UltraWide Monitor', description: '34-inch curved display' },
-      { name: 'Mechanical Keyboard', description: 'Keychron K8 Pro' },
-      { name: 'Sony WH-1000XM5', description: 'Noise-cancelling headphones' },
+      { name: 'MacBook Pro M2', description: '16-inch, 32GB RAM', url: undefined },
+      { name: 'LG UltraWide Monitor', description: '34-inch curved display', url: undefined },
+      { name: 'Mechanical Keyboard', description: 'Keychron K8 Pro', url: undefined },
+      { name: 'Sony WH-1000XM5', description: 'Noise-cancelling headphones', url: undefined },
     ],
   },
 ];

@@ -97,14 +97,14 @@ export default function Earth() {
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
+            args={[new Float32Array(markers.points.flatMap((p) => [p.x, p.y, p.z])), 3]}
             count={markers.points.length}
-            array={new Float32Array(markers.points.flatMap((p) => [p.x, p.y, p.z]))}
             itemSize={3}
           />
           <bufferAttribute
             attach="attributes-color"
+            args={[new Float32Array(markers.colors), 3]}
             count={markers.colors.length / 3}
-            array={new Float32Array(markers.colors)}
             itemSize={3}
           />
         </bufferGeometry>
@@ -126,17 +126,16 @@ export default function Earth() {
             line.end
           );
           const points = curve.getPoints(50);
-          const geometry = new THREE.BufferGeometry().setFromPoints(points);
           
           return (
-            <line key={i} geometry={geometry}>
-              <lineBasicMaterial
-                color={line.color}
-                transparent
-                opacity={0.3}
-                linewidth={2}
-              />
-            </line>
+            <primitive key={i} object={new THREE.Line(
+              new THREE.BufferGeometry().setFromPoints(points),
+              new THREE.LineBasicMaterial({
+                color: line.color,
+                transparent: true,
+                opacity: 0.3,
+              })
+            )} />
           );
         })}
       </group>

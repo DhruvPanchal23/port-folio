@@ -9,7 +9,13 @@ import Link from 'next/link';
 
 type Tab = 'overview' | 'projects' | 'testimonials' | 'blog' | 'guestbook' | 'feedback' | 'contact' | 'settings';
 
-const NAV_ITEMS: { id: Tab; label: string; icon: React.ElementType }[] = [
+interface NavItem {
+  id: Tab;
+  label: string;
+  icon: any;
+}
+
+const NAV_ITEMS: NavItem[] = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
   { id: 'projects', label: 'Projects', icon: FolderOpen },
   { id: 'testimonials', label: 'Testimonials', icon: MessageSquare },
@@ -619,7 +625,7 @@ export default function AdminDashboard({ user }: { user: User }) {
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted'
               }`}
             >
-              <Icon size={15} />
+              <Icon size={15} strokeWidth={2} />
               {label}
             </button>
           ))}
