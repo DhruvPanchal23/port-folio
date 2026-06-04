@@ -7,15 +7,16 @@ import type { User } from '@supabase/supabase-js';
 import { LayoutDashboard, FolderOpen, MessageSquare, Briefcase, FileText, Mail, LogOut, Settings, ChartBar as BarChart3, Eye, Plus, Trash2, CreditCard as Edit2, CircleCheck as CheckCircle, Circle, ChevronRight, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 
-type Tab = 'overview' | 'projects' | 'testimonials' | 'services' | 'blog' | 'contact' | 'settings';
+type Tab = 'overview' | 'projects' | 'testimonials' | 'blog' | 'guestbook' | 'feedback' | 'contact' | 'settings';
 
 const NAV_ITEMS: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
   { id: 'projects', label: 'Projects', icon: FolderOpen },
   { id: 'testimonials', label: 'Testimonials', icon: MessageSquare },
-  { id: 'services', label: 'Services', icon: Briefcase },
   { id: 'blog', label: 'Blog', icon: FileText },
-  { id: 'contact', label: 'Messages', icon: Mail },
+  { id: 'guestbook', label: 'Guestbook', icon: MessageSquare },
+  { id: 'feedback', label: 'Feedback', icon: Mail },
+  { id: 'contact', label: 'Contact', icon: Mail },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
@@ -334,6 +335,239 @@ function SettingsTab({ user }: { user: User }) {
   );
 }
 
+function BlogTab() {
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from('blog_posts').select('*').order('published_at', { ascending: false }).then(({ data }) => {
+      setPosts(data || []);
+      setLoading(false);
+    });
+  }, []);
+
+  const toggleStatus = async (id: string, current: string) => {
+    const next = current === 'published' ? 'draft' : 'published';
+    await supabase.from('blog_posts').update({ status: next }).eq('id', id);
+    setPosts(ps => ps.map(p => p.id === id ? { ...p, status: next } : p));
+  };
+
+  if (loading) return <div className="flex justify-center py-12"><div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="font-display text-xl font-bold text-foreground">Blog Posts</h2>
+        <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors">
+          <Plus size={14} />
+          New Post
+        </button>
+      </div>
+      <div className="space-y-3">
+        {posts.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground text-sm">No blog posts yet.</div>
+        ) : (
+          posts.map((post) => (
+            <div key={post.id} className="p-4 rounded-xl bg-card border border-border hover:border-primary/20 transition-colors">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm text-foreground mb-0.5">{post.title}</div>
+                  <div className="text-xs text-muted-foreground mb-2">{post.excerpt}</div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{post.category}</span>
+                    <span>·</span>
+                    <span>{post.read_time} min read</span>
+                    <span>·</span>
+                    <span>{new Date(post.published_at || post.created_at).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => toggleStatus(post.id, post.status)}
+                  className={`shrink-0 text-xs px-2.5 py-1 rounded-full border transition-colors ${
+                    post.status === 'published'
+                      ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-400'
+                      : 'border-border bg-muted text-muted-foreground'
+                  }`}
+                >
+                  {post.status}
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+function GuestbookTab() {
+  const [entries, setEntries] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from('guestbook_entries').select('*').order('created_at', { ascending: false }).then(({ data }) => {
+      setEntries(data || []);
+      setLoading(false);
+    });
+  }, []);
+
+  const toggleStatus = async (id: string, current: string) => {
+    const next = current === 'approved' ? 'hidden' : 'approved';
+    await supabase.from('guestbook_entries').update({ status: next }).eq('id', id);
+    setEntries(es => es.map(e => e.id === id ? { ...e, status: next } : e));
+  };
+
+  const deleteEntry = async (id: string) => {
+    if (!confirm('Delete this entry?')) return;
+    await supabase.from('guestbook_entries').delete().eq('id', id);
+    setEntries(es => es.filter(e => e.id !== id));
+  };
+
+  if (loading) return <div className="flex justify-center py-12"><div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
+
+  return (
+    <div>
+      <h2 className="font-display text-xl font-bold text-foreground mb-6">
+        Guestbook Entries
+        {entries.filter(e => e.status === 'pending').length > 0 && (
+          <span className="ml-2 text-sm font-normal px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+            {entries.filter(e => e.status === 'pending').length} pending
+          </span>
+        )}
+      </h2>
+      <div className="space-y-3">
+        {entries.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground text-sm">No guestbook entries yet.</div>
+        ) : (
+          entries.map((entry) => (
+            <div
+              key={entry.id}
+              className={`p-4 rounded-xl border transition-colors ${
+                entry.status === 'pending' ? 'bg-amber/3 border-amber/20' : 'bg-card border-border'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-4 mb-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-sm text-foreground">{entry.name}</span>
+                    {entry.status === 'pending' && (
+                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
+                        Pending
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-muted-foreground">{entry.email}</div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(entry.created_at).toLocaleDateString()}
+                  </span>
+                  <button
+                    onClick={() => toggleStatus(entry.id, entry.status)}
+                    className={`text-xs px-2 py-1 rounded-lg transition-colors ${
+                      entry.status === 'approved'
+                        ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'
+                        : 'bg-muted text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {entry.status === 'approved' ? 'Approved' : 'Approve'}
+                  </button>
+                  <button
+                    onClick={() => deleteEntry(entry.id)}
+                    className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">{entry.message}</p>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+function FeedbackTab() {
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from('feedback_submissions').select('*').order('created_at', { ascending: false }).then(({ data }) => {
+      setSubmissions(data || []);
+      setLoading(false);
+    });
+  }, []);
+
+  const markRead = async (id: string) => {
+    await supabase.from('feedback_submissions').update({ status: 'read' }).eq('id', id);
+    setSubmissions(fs => fs.map(f => f.id === id ? { ...f, status: 'read' } : f));
+  };
+
+  if (loading) return <div className="flex justify-center py-12"><div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>;
+
+  return (
+    <div>
+      <h2 className="font-display text-xl font-bold text-foreground mb-6">
+        Feedback Submissions
+        {submissions.filter(f => f.status === 'unread').length > 0 && (
+          <span className="ml-2 text-sm font-normal px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+            {submissions.filter(f => f.status === 'unread').length} unread
+          </span>
+        )}
+      </h2>
+      <div className="space-y-3">
+        {submissions.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground text-sm">No feedback yet.</div>
+        ) : (
+          submissions.map((feedback) => (
+            <div
+              key={feedback.id}
+              className={`p-4 rounded-xl border transition-colors ${
+                feedback.status === 'unread' ? 'bg-blue/3 border-blue/20' : 'bg-card border-border'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-4 mb-2">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    {feedback.name && (
+                      <span className="font-medium text-sm text-foreground">{feedback.name}</span>
+                    )}
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground capitalize">
+                      {feedback.category}
+                    </span>
+                    {feedback.status === 'unread' && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                    )}
+                  </div>
+                  {feedback.email && (
+                    <div className="text-xs text-muted-foreground">{feedback.email}</div>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(feedback.created_at).toLocaleDateString()}
+                  </span>
+                  {feedback.status === 'unread' && (
+                    <button
+                      onClick={() => markRead(feedback.id)}
+                      className="text-xs px-2 py-1 rounded-lg bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Mark read
+                    </button>
+                  )}
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">{feedback.message}</p>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function AdminDashboard({ user }: { user: User }) {
   const [tab, setTab] = useState<Tab>('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -345,6 +579,9 @@ export default function AdminDashboard({ user }: { user: User }) {
       case 'overview': return <OverviewTab />;
       case 'projects': return <ProjectsTab />;
       case 'testimonials': return <TestimonialsTab />;
+      case 'blog': return <BlogTab />;
+      case 'guestbook': return <GuestbookTab />;
+      case 'feedback': return <FeedbackTab />;
       case 'contact': return <ContactTab />;
       case 'settings': return <SettingsTab user={user} />;
       default: return (
@@ -362,7 +599,7 @@ export default function AdminDashboard({ user }: { user: User }) {
         <div className="p-5 border-b border-border">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-display font-bold text-sm">
-              A
+              DP
             </div>
             <div>
               <div className="font-display font-bold text-sm text-foreground">Admin Panel</div>
@@ -412,7 +649,7 @@ export default function AdminDashboard({ user }: { user: User }) {
         {/* Mobile header */}
         <div className="md:hidden flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-display font-bold text-sm">A</div>
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-display font-bold text-sm">DP</div>
             <span className="font-display font-bold text-sm">Admin</span>
           </div>
           <div className="flex items-center gap-2">

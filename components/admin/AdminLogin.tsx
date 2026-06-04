@@ -42,7 +42,7 @@ export default function AdminLogin() {
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-display font-bold">
-            A
+            DP
           </div>
           <div>
             <div className="font-display font-bold text-foreground">Admin Panel</div>
