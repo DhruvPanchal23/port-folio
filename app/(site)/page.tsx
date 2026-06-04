@@ -6,7 +6,7 @@ import { ArrowUpRight, Download, Globe, Zap, Code2, TrendingUp, Github, Linkedin
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 
-const EarthCanvas = dynamic(() => import('@/components/3d/EarthCanvas'), {
+const CSSGlobe = dynamic(() => import('@/components/3d/CSSGlobe'), {
   ssr: false,
   loading: () => <div className="w-full h-[500px] md:h-[600px] flex items-center justify-center">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -180,7 +180,7 @@ export default function HomePage() {
                     Working with clients worldwide
                   </p>
                 </div>
-                <EarthCanvas />
+                <CSSGlobe />
                 <div className="mt-4 flex justify-center gap-4 text-xs">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-blue-500"></span>
