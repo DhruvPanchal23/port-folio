@@ -16,7 +16,7 @@ export default function ResumePage() {
         >
           <div>
             <h1 className="font-display text-5xl md:text-6xl font-bold mb-2">Resume</h1>
-            <p className="text-lg text-muted-foreground">Full Stack Developer & Graphics Designer</p>
+            <p className="text-lg text-muted-foreground">A snapshot of what I&apos;ve built, broken & shipped.</p>
           </div>
           <button className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg shadow-primary/20">
             <Download size={16} />
@@ -33,7 +33,6 @@ export default function ResumePage() {
             className="glass rounded-2xl p-8"
           >
             <h2 className="font-display text-3xl font-bold text-foreground mb-4">Dhruv Panchal</h2>
-            <p className="text-lg text-muted-foreground mb-4">Full Stack Developer & Graphics Designer</p>
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <MapPin size={14} />

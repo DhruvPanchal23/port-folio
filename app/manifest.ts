@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Full Stack Developer & Designer Portfolio',
     start_url: '/',
     display: 'standalone',
-    background_color: '#0d0d0d',
-    theme_color: '#3b82f6',
+    background_color: '#0b0d10',
+    theme_color: '#34d399',
     icons: [
       {
         src: '/icon-192.png',

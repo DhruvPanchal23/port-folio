@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import { applyAccent, readStoredAccent } from '@/lib/theme-accent';
-import LoadingScreen from '@/components/LoadingScreen';
 import CustomCursor from '@/components/CustomCursor';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
@@ -21,7 +20,6 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <CommandMenuProvider>
       <SkipToContent />
-      <LoadingScreen />
       <SiteBackground />
       <CustomCursor />
       <SiteCommandMenu />
