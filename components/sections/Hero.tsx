@@ -76,7 +76,7 @@ export default function Hero() {
     <section
       ref={containerRef}
       id="hero"
-      className="relative min-h-screen flex items-center overflow-hidden bg-background"
+      className="relative flex min-h-screen items-center overflow-hidden bg-background/55 dark:bg-background/45"
     >
       {/* Animated background */}
       <div className="absolute inset-0 dot-grid opacity-40" />
@@ -146,14 +146,14 @@ export default function Hero() {
           {/* CTAs */}
           <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 mb-12">
             <Link
-              href="#work"
+              href="/work"
               className="group inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
             >
               View My Work
               <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
             <Link
-              href="#contact"
+              href="/contact"
               className="group inline-flex items-center gap-2 px-6 py-3.5 border border-border text-foreground rounded-xl font-medium hover:bg-muted transition-all duration-200 hover:border-foreground/30"
             >
               Get In Touch

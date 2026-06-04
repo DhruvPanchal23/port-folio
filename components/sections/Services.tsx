@@ -136,7 +136,7 @@ export default function Services({ services }: { services?: Service[] }) {
           className="text-center"
         >
           <Link
-            href="#contact"
+            href="/contact"
             className="group inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95"
           >
             Discuss Your Project

@@ -61,6 +61,53 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+
+  /* Accent presets (hue shift on primary family; base tokens unchanged). */
+  html.dark[data-accent='ocean'] {
+    --primary: 190 88% 58%;
+    --accent: 190 88% 58%;
+    --ring: 190 88% 58%;
+    --chart-1: 190 75% 48%;
+  }
+  html.dark[data-accent='violet'] {
+    --primary: 262 83% 62%;
+    --accent: 262 83% 62%;
+    --ring: 262 83% 62%;
+    --chart-1: 262 70% 55%;
+  }
+  html.dark[data-accent='ember'] {
+    --primary: 18 88% 58%;
+    --accent: 18 88% 58%;
+    --ring: 18 88% 58%;
+    --chart-1: 25 85% 52%;
+  }
+  html.dark[data-accent='aurora'] {
+    --primary: 165 72% 48%;
+    --accent: 165 72% 48%;
+    --ring: 165 72% 48%;
+    --chart-1: 170 65% 42%;
+  }
+
+  html:not(.dark)[data-accent='ocean'] {
+    --primary: 190 90% 42%;
+    --accent: 190 90% 42%;
+    --ring: 190 90% 42%;
+  }
+  html:not(.dark)[data-accent='violet'] {
+    --primary: 262 75% 52%;
+    --accent: 262 75% 52%;
+    --ring: 262 75% 52%;
+  }
+  html:not(.dark)[data-accent='ember'] {
+    --primary: 18 85% 48%;
+    --accent: 18 85% 48%;
+    --ring: 18 85% 48%;
+  }
+  html:not(.dark)[data-accent='aurora'] {
+    --primary: 165 65% 38%;
+    --accent: 165 65% 38%;
+    --ring: 165 65% 38%;
+  }
 }
 
 @layer base {

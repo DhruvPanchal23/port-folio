@@ -44,8 +44,8 @@ export default function LoadingScreen() {
             transition={{ duration: 0.5 }}
             className="relative mb-12"
           >
-            <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-display font-bold text-2xl shadow-lg">
-              A
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary font-display text-lg font-bold text-primary-foreground shadow-lg ring-1 ring-white/10">
+              AR
             </div>
           </motion.div>
 

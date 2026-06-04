@@ -253,7 +253,7 @@ export default function Work({ projects }: { projects?: Project[] }) {
             transition={{ delay: 0.2 }}
           >
             <Link
-              href="#contact"
+              href="/contact"
               className="group inline-flex items-center gap-2 px-5 py-2.5 border border-border rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all"
             >
               Start a Project

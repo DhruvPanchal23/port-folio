@@ -12,14 +12,11 @@ const socials = [
   { icon: Mail, href: 'mailto:hello@alexrivera.dev', label: 'Email' },
 ];
 
-const quickLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Work', href: '#work' },
-  { label: 'Tech Stack', href: '#tech' },
-  { label: 'Services', href: '#services' },
-  { label: 'Blog', href: '#blog' },
-  { label: 'Contact', href: '#contact' },
-];
+import { SITE_NAV } from '@/lib/nav-config';
+
+const footerNav = SITE_NAV.filter((l) => l.href !== '/').map((l) =>
+  l.href === '/tech' ? { ...l, label: 'Tech Stack' } : l
+);
 
 const services = [
   'Web Development',
@@ -54,7 +51,7 @@ export default function Footer() {
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
-                href="#contact"
+                href="/contact"
                 className="group inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95"
               >
                 Start a Project
@@ -75,9 +72,9 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
             {/* Brand */}
             <div className="md:col-span-1">
-              <Link href="/" className="group flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-display font-bold text-sm">
-                  A
+              <Link href="/" className="group mb-4 flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary font-display text-xs font-bold text-primary-foreground ring-1 ring-white/10">
+                  AR
                 </div>
                 <span className="font-display font-semibold">Alex Rivera</span>
               </Link>
@@ -98,7 +95,7 @@ export default function Footer() {
             <div>
               <h4 className="text-sm font-semibold text-foreground mb-4">Navigation</h4>
               <ul className="space-y-2.5">
-                {quickLinks.map((link) => (
+                {footerNav.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
