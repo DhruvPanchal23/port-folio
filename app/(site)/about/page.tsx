@@ -1,22 +1,36 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { Download, Mail, MapPin, Calendar, Code2, Palette, Zap, Heart } from 'lucide-react';
+import { useRef } from 'react';
 
 export default function AboutPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.6]);
+
   return (
-    <div className="min-h-screen py-24">
+    <div ref={containerRef} className="min-h-screen py-24">
       <div className="container-max">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          style={{ y, opacity }}
           className="mb-16 text-center"
         >
-          <h1 className="font-display text-5xl md:text-7xl font-bold mb-4">
+          <motion.h1 
+            className="font-display text-5xl md:text-7xl font-bold mb-4"
+            whileHover={{ scale: 1.02 }}
+          >
             Know who I am
-          </h1>
+          </motion.h1>
           <p className="text-xl text-muted-foreground">
             Pixels, logic & soul – that's my trinity
           </p>

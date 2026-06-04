@@ -9,6 +9,7 @@ import Footer from '@/components/Footer';
 import SiteBackground from '@/components/SiteBackground';
 import PageTransition from '@/components/PageTransition';
 import SiteCommandMenu from '@/components/SiteCommandMenu';
+import ScrollProgress from '@/components/ScrollProgress';
 import { CommandMenuProvider } from '@/components/CommandMenuProvider';
 
 export default function SiteShell({ children }: { children: React.ReactNode }) {
@@ -22,6 +23,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
       <SiteBackground />
       <CustomCursor />
       <SiteCommandMenu />
+      <ScrollProgress />
       <Navigation />
       <main className="relative z-10">
         <PageTransition>{children}</PageTransition>
