@@ -81,12 +81,7 @@ export default function Navigation() {
               <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-display text-sm font-bold text-primary-foreground shadow-md shadow-primary/20 ring-1 ring-white/10 transition-transform duration-300 group-hover:scale-105">
                 DP
               </div>
-              <div className="hidden flex-col leading-none sm:flex">
-                <span className="font-display text-sm font-semibold tracking-tight text-foreground">dhruv</span>
-                <span className="font-mono-custom text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  Developer & Designer
-                </span>
-              </div>
+              <span className="font-display text-base font-bold tracking-tight text-foreground">dhruv</span>
             </Link>
 
             <nav className="hidden items-center gap-0.5 md:flex">

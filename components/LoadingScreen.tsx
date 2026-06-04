@@ -45,7 +45,7 @@ export default function LoadingScreen() {
             className="relative mb-12"
           >
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary font-display text-lg font-bold text-primary-foreground shadow-lg ring-1 ring-white/10">
-              AR
+              DP
             </div>
           </motion.div>
 

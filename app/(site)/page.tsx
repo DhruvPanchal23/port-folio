@@ -1,9 +1,8 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowUpRight, Download, Globe, Zap, Code2, TrendingUp, Github, Linkedin, Mail, Twitter } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ArrowUpRight, Github, Linkedin, Mail, Twitter, MapPin, Clock } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
 const CSSGlobe = dynamic(() => import('@/components/3d/CSSGlobe'), {
@@ -13,61 +12,35 @@ const CSSGlobe = dynamic(() => import('@/components/3d/CSSGlobe'), {
   </div>,
 });
 
-const greetings = [
-  'Hello', 'Namaskar', 'Namaste', 'स्वस्थस्य स्वागतं', 'नमस्कार', 'নমস্কার', 
-  'Hallo', 'Bonjour', 'Привет', 'مرحباً', 'કેમ છો?'
-];
-
-const techStack = [
-  'Frontend Development', 'Backend Development', 'React', 'React Specialist', 
-  'TypeScript Expert', 'Modern Web Apps', 'Responsive Design', 'API Development', 
-  'Development', 'Designing', 'Full Stack', 'UI/UX', 'MongoDB', 'Node.js', 
-  'Express.js', 'Next.js', 'TailwindCSS', 'Git & GitHub'
-];
+const techStack = {
+  frontend: [
+    { name: 'React', icon: 'react' },
+    { name: 'Next.js', icon: 'nextjs' },
+    { name: 'TypeScript', icon: 'typescript' },
+    { name: 'Tailwind CSS', icon: 'tailwindcss' },
+    { name: 'Framer Motion', icon: 'motion' },
+  ],
+  backend: [
+    { name: 'Node.js', icon: 'nodejs' },
+    { name: 'Express.js', icon: 'expressjs' },
+    { name: 'MongoDB', icon: 'mongodb' },
+    { name: 'MySQL', icon: 'mysql' },
+    { name: 'REST APIs', icon: 'api' },
+  ],
+  tools: [
+    { name: 'Git', icon: 'git' },
+    { name: 'GitHub', icon: 'github' },
+    { name: 'Figma', icon: 'figma' },
+    { name: 'VS Code', icon: 'vscode' },
+    { name: 'Docker', icon: 'docker' },
+  ],
+};
 
 export default function HomePage() {
-  const [currentGreeting, setCurrentGreeting] = useState(0);
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentGreeting((prev) => (prev + 1) % greetings.length);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="min-h-screen">
-      {/* Greeting Section with Parallax */}
-      <motion.section 
-        style={{ opacity, scale }}
-        className="section-padding relative overflow-hidden border-b border-border"
-      >
-        <div className="absolute inset-0 dot-grid opacity-20" />
-        <div className="container-max relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
-            <motion.h1
-              key={currentGreeting}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="font-display text-4xl md:text-6xl font-bold text-gradient mb-6"
-            >
-              {greetings[currentGreeting]}
-            </motion.h1>
-            <p className="text-lg text-muted-foreground">Welcome to my digital space</p>
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Hero Section with 3D Earth */}
-      <section id="hero" className="section-padding relative overflow-hidden">
+      {/* Hero Section */}
+      <section className="section-padding relative overflow-hidden">
         <div className="absolute inset-0 dot-grid opacity-30" />
         
         {/* Animated gradient orbs */}
@@ -83,65 +56,59 @@ export default function HomePage() {
           }}
           className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full bg-primary/10 blur-3xl"
         />
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.2, 0.4, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-          className="absolute bottom-1/4 left-1/4 w-96 h-96 rounded-full bg-blue-400/10 blur-3xl"
-        />
 
         <div className="container-max relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Content */}
+          <div className="max-w-5xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
+              className="text-center mb-12"
             >
-              <h2 className="font-display text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                <span className="block text-foreground">Pixels. Logic. Story.</span>
-              </h2>
-              <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-xl">
-                I craft digital experiences you'll never forget.
-              </p>
+              <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-[1.1]">
+                <span className="block text-foreground">Code with</span>
+                <span className="block text-gradient">Purpose. Design with</span>
+                <span className="block text-foreground">Precision.</span>
+              </h1>
               
-              <div className="flex items-center gap-3 mb-8">
-                <div className="relative h-12 w-12 rounded-full overflow-hidden ring-2 ring-primary/20">
-                  <div className="h-full w-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground font-display font-bold text-lg">
-                    DP
+              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8">
+                Full-stack developer crafting digital experiences that ship fast, scale well, and users actually love.
+              </p>
+
+              {/* Profile info */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
+                <div className="flex items-center gap-3">
+                  <div className="relative h-14 w-14 rounded-full overflow-hidden ring-2 ring-primary/20">
+                    <div className="h-full w-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground font-display font-bold text-xl">
+                      DP
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <p className="font-display font-semibold text-foreground">Dhruv Panchal</p>
-                  <p className="text-sm text-muted-foreground">Developer & Designer</p>
+                  <div className="text-left">
+                    <p className="font-display text-lg font-bold text-foreground">Dhruv Panchal</p>
+                    <p className="text-sm text-muted-foreground">Full Stack Developer</p>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-4 mb-8">
+              {/* CTAs */}
+              <div className="flex flex-wrap items-center justify-center gap-4 mb-10">
                 <Link
                   href="/connect"
-                  className="group inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
                 >
                   Let's Connect
-                  <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </Link>
                 <Link
                   href="/work"
-                  className="inline-flex items-center gap-2 px-6 py-3.5 border border-border text-foreground rounded-xl font-medium hover:bg-muted transition-all duration-200"
+                  className="inline-flex items-center gap-2 px-8 py-4 border-2 border-border text-foreground rounded-xl font-medium hover:bg-muted transition-all duration-200"
                 >
-                  Hire Me
+                  View Projects
                 </Link>
               </div>
 
               {/* Social links */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center gap-3">
                 {[
                   { icon: Github, href: 'https://github.com/dhruvpanchal', label: 'GitHub' },
                   { icon: Twitter, href: 'https://twitter.com/dhruvpanchal', label: 'Twitter' },
@@ -156,137 +123,190 @@ export default function HomePage() {
                     aria-label={label}
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="w-10 h-10 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/5 transition-all duration-200"
+                    className="w-11 h-11 rounded-xl border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/5 transition-all duration-200"
                   >
                     <Icon size={18} />
                   </motion.a>
                 ))}
               </div>
             </motion.div>
-
-            {/* Right: 3D Earth */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
-            >
-              <div className="glass rounded-2xl p-4 md:p-8">
-                <div className="mb-4">
-                  <h3 className="font-display text-xl font-bold text-foreground mb-2">
-                    Global Collaboration
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Working with clients worldwide
-                  </p>
-                </div>
-                <CSSGlobe />
-                <div className="mt-4 flex justify-center gap-4 text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                    <span className="text-muted-foreground">UK</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                    <span className="text-muted-foreground">India</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                    <span className="text-muted-foreground">USA</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Tech Stack Marquee */}
-      <section className="relative overflow-hidden border-y border-border bg-muted/30 py-6">
-        <div className="flex animate-marquee whitespace-nowrap">
-          {[...techStack, ...techStack].map((tech, i) => (
-            <motion.span
-              key={i}
-              whileHover={{ scale: 1.1, color: 'hsl(var(--primary))' }}
-              className="mx-4 text-sm font-medium text-muted-foreground inline-flex items-center gap-2 cursor-default"
-            >
-              <span className="h-1 w-1 rounded-full bg-primary" />
-              {tech}
-            </motion.span>
-          ))}
-        </div>
-      </section>
-
-      {/* Feature Cards with enhanced animations */}
-      <section className="section-padding">
+      {/* Tech Stack Section */}
+      <section className="section-padding bg-muted/30 border-y border-border">
         <div className="container-max">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              {
-                icon: Code2,
-                title: 'Collaboration',
-                subtitle: "Let's work together",
-                description: 'I prioritize client collaboration, fostering open communication and ensuring your vision comes to life through every iteration.',
-                tag: 'Always responsive',
-              },
-              {
-                icon: Globe,
-                title: 'Global Reach',
-                subtitle: 'The Inside Scoop',
-                description: "I'm very flexible with time zone communications. Currently based in India, working with clients worldwide.",
-                tag: 'Remote-ready',
-              },
-              {
-                icon: Zap,
-                title: 'Technology',
-                subtitle: 'Cutting-edge Stack',
-                description: 'Using the latest technologies and best practices to build scalable, performant applications.',
-                tag: 'Modern tools',
-              },
-              {
-                icon: TrendingUp,
-                title: 'Impact',
-                subtitle: 'Stand Out',
-                description: 'Websites that make a difference and leave lasting impressions on your users.',
-                tag: "Let's work together",
-              },
-            ].map((card, i) => (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Tech Stack
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              The tools behind everything I build
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {Object.entries(techStack).map(([category, technologies], i) => (
               <motion.div
-                key={card.title}
+                key={category}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="glass rounded-2xl p-8 hover:border-primary/50 transition-all duration-300 cursor-pointer"
+                className="glass rounded-2xl p-6"
               >
-                <div className="flex items-start gap-4 mb-4">
-                  <motion.div 
-                    whileHover={{ rotate: 360, scale: 1.1 }}
-                    transition={{ duration: 0.6 }}
-                    className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"
-                  >
-                    <card.icon className="h-6 w-6 text-primary" />
-                  </motion.div>
-                  <div>
-                    <h3 className="font-display text-xl font-bold text-foreground mb-1">{card.title}</h3>
-                    <p className="text-sm text-muted-foreground">{card.subtitle}</p>
-                  </div>
+                <h3 className="font-display text-lg font-bold text-foreground mb-4 capitalize">
+                  {category}
+                </h3>
+                <div className="space-y-3">
+                  {technologies.map((tech) => (
+                    <div key={tech.name} className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <span className="text-xs font-bold text-primary">
+                          {tech.name[0]}
+                        </span>
+                      </div>
+                      <span className="text-sm font-medium text-foreground">{tech.name}</span>
+                    </div>
+                  ))}
                 </div>
-                <p className="text-muted-foreground mb-4 leading-relaxed">
-                  {card.description}
-                </p>
-                <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
-                  {card.tag}
-                </span>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section with parallax */}
-      <section className="section-padding bg-muted/30 border-y border-border relative overflow-hidden">
+      {/* Globe Section - Global Collaboration */}
+      <section className="section-padding">
+        <div className="container-max">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">
+                Built for Global Collaboration
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                Based in India, working with clients worldwide. Flexible with timezones, 
+                clear communication, and fast iterations — no matter where you are.
+              </p>
+
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground mb-1">Remote-Ready</p>
+                    <p className="text-sm text-muted-foreground">Available for remote work globally</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground mb-1">Flexible Schedule</p>
+                    <p className="text-sm text-muted-foreground">Timezone-friendly communication</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                  <span className="text-muted-foreground">UK</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                  <span className="text-muted-foreground">India</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span className="text-muted-foreground">USA</span>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="glass rounded-2xl p-6"
+            >
+              <CSSGlobe />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* What I Bring Section */}
+      <section className="section-padding bg-muted/30 border-y border-border">
+        <div className="container-max">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
+              What You Get
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Clean code, pixel-perfect UI, deployed & scaling
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                title: 'Fast Iterations',
+                description: 'Scoped, estimated, delivered on time',
+              },
+              {
+                title: 'Clean Code',
+                description: 'Maintainable, scalable, well-documented',
+              },
+              {
+                title: 'Clear Communication',
+                description: 'Regular updates, no surprises',
+              },
+              {
+                title: 'Production Ready',
+                description: 'Tested, deployed, monitoring setup',
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -5 }}
+                className="glass rounded-xl p-6 text-center"
+              >
+                <h3 className="font-display text-lg font-bold text-foreground mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {item.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="section-padding relative overflow-hidden">
         <motion.div
           animate={{
             scale: [1, 1.1, 1],
@@ -299,30 +319,29 @@ export default function HomePage() {
           }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-to-r from-primary/5 to-blue-500/5 blur-3xl"
         />
+        
         <div className="container-max relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-3xl mx-auto text-center glass rounded-3xl p-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <motion.h2 
-                className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4"
-                whileHover={{ scale: 1.02 }}
-              >
-                Ready to bring your next project to life?
-              </motion.h2>
-              <motion.p 
-                className="text-lg text-muted-foreground mb-8"
-                whileHover={{ scale: 1.05 }}
-              >
-                dhruvpanchal.dev@gmail.com
-              </motion.p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                Open to Work
+              </div>
+              <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
+                Let's Build Something Great
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8">
+                Available for full-time roles & freelance projects
+              </p>
               <Link
                 href="/connect"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
               >
-                Let's work together
+                Get in Touch
                 <ArrowUpRight size={18} />
               </Link>
             </motion.div>
