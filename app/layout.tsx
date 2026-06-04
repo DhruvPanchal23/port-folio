@@ -56,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               name: 'Dhruv Panchal',
               url: 'https://dhruvpanchal.dev',
               email: 'dhruvpanchal.dev@gmail.com',
-              jobTitle: 'Full Stack Developer & Designer',
+              jobTitle: 'Full Stack Developer',
               description: 'Full-stack developer, graphic designer & creative technologist.',
               alumniOf: {
                 '@type': 'CollegeOrUniversity',
