@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Github, Twitter, Linkedin, Mail, ArrowUpRight, Briefcase } from 'lucide-react';
+import { Github, Twitter, Linkedin, Mail, ArrowUpRight, Briefcase, Wrench, MessageSquare, Music, Disc3 } from 'lucide-react';
 
 const socials = [
   { icon: Linkedin, href: 'https://linkedin.com/in/dhruv-panchal', label: 'LinkedIn' },
@@ -43,55 +43,132 @@ export default function Footer() {
 
         {/* Section 2: Quick Links */}
         <div className="py-12 md:py-16 border-b border-border">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h4 className="text-sm font-semibold text-foreground mb-3">Uses</h4>
-              <p className="text-sm text-muted-foreground mb-3">
-                Check out my favorite tools and spots around the web.
-              </p>
-              <Link
-                href="/engine-room"
-                className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-              >
-                Explore Tools
-                <ArrowUpRight size={14} />
-              </Link>
-            </div>
-
-            <div>
-              <h4 className="text-sm font-semibold text-foreground mb-3">Guestbook</h4>
-              <p className="text-sm text-muted-foreground mb-3">
-                Let me know you were here!
-              </p>
-              <Link
-                href="/guestbook"
-                className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-              >
-                Sign Guestbook
-                <ArrowUpRight size={14} />
-              </Link>
-            </div>
-
-            <div>
-              <h4 className="text-sm font-semibold text-foreground mb-3">Recent Favorite</h4>
-              <p className="text-sm text-muted-foreground mb-2">
-                I'm listening to
-              </p>
-              <p className="text-sm font-medium text-foreground mb-1">
-                "Namastute"
-              </p>
-              <p className="text-xs text-muted-foreground">
-                by Seedhe Maut from the album{' '}
-                <a
-                  href="https://open.spotify.com/album/namastute"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {/* Uses */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ delay: 0, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4 }}
+              className="group relative overflow-hidden rounded-2xl border border-border bg-card/40 p-6 backdrop-blur-sm transition-colors hover:border-primary/40"
+              data-testid="footer-card-uses"
+            >
+              <div className="pointer-events-none absolute -top-12 -right-12 h-32 w-32 rounded-full bg-primary/15 blur-2xl opacity-0 transition-opacity group-hover:opacity-100" />
+              <div className="relative">
+                <div className="mb-4 flex items-center gap-3">
+                  <motion.div
+                    whileHover={{ rotate: 12 }}
+                    className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background/60 text-primary"
+                  >
+                    <Wrench size={15} />
+                  </motion.div>
+                  <h4 className="font-display text-base font-bold text-foreground">Uses</h4>
+                </div>
+                <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
+                  Check out my favorite tools and spots around the web.
+                </p>
+                <Link
+                  href="/engine-room"
+                  className="group/cta inline-flex items-center gap-1.5 text-sm font-medium text-primary"
                 >
-                  Namastute
-                </a>
-              </p>
-            </div>
+                  Explore tools
+                  <ArrowUpRight size={14} className="transition-transform group-hover/cta:translate-x-0.5 group-hover/cta:-translate-y-0.5" />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Guestbook */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ delay: 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4 }}
+              className="group relative overflow-hidden rounded-2xl border border-border bg-card/40 p-6 backdrop-blur-sm transition-colors hover:border-primary/40"
+              data-testid="footer-card-guestbook"
+            >
+              <div className="pointer-events-none absolute -top-12 -right-12 h-32 w-32 rounded-full bg-primary/15 blur-2xl opacity-0 transition-opacity group-hover:opacity-100" />
+              <div className="relative">
+                <div className="mb-4 flex items-center gap-3">
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background/60 text-primary"
+                  >
+                    <MessageSquare size={15} />
+                  </motion.div>
+                  <h4 className="font-display text-base font-bold text-foreground">Guestbook</h4>
+                </div>
+                <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
+                  Let me know you were here!
+                </p>
+                <Link
+                  href="/guestbook"
+                  className="group/cta inline-flex items-center gap-1.5 text-sm font-medium text-primary"
+                >
+                  Sign guestbook
+                  <ArrowUpRight size={14} className="transition-transform group-hover/cta:translate-x-0.5 group-hover/cta:-translate-y-0.5" />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Recent Favorite */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ delay: 0.16, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4 }}
+              className="group relative overflow-hidden rounded-2xl border border-border bg-card/40 p-6 backdrop-blur-sm transition-colors hover:border-primary/40 sm:col-span-2 lg:col-span-1"
+              data-testid="footer-card-recent"
+            >
+              <div className="pointer-events-none absolute -top-12 -right-12 h-32 w-32 rounded-full bg-primary/15 blur-2xl opacity-0 transition-opacity group-hover:opacity-100" />
+              <div className="relative">
+                <div className="mb-4 flex items-center gap-3">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+                    className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background/60 text-primary"
+                  >
+                    <Disc3 size={15} />
+                  </motion.div>
+                  <h4 className="font-display text-base font-bold text-foreground">Recent Favorite</h4>
+                  <span className="ml-auto inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 font-mono-custom text-[9px] uppercase tracking-wider text-primary">
+                    <motion.span
+                      animate={{ scaleY: [0.4, 1, 0.4] }}
+                      transition={{ duration: 0.9, repeat: Infinity }}
+                      className="inline-block h-2 w-0.5 rounded-full bg-primary"
+                    />
+                    <motion.span
+                      animate={{ scaleY: [1, 0.4, 1] }}
+                      transition={{ duration: 0.9, repeat: Infinity, delay: 0.15 }}
+                      className="inline-block h-2 w-0.5 rounded-full bg-primary"
+                    />
+                    <motion.span
+                      animate={{ scaleY: [0.6, 1, 0.6] }}
+                      transition={{ duration: 0.9, repeat: Infinity, delay: 0.3 }}
+                      className="inline-block h-2 w-0.5 rounded-full bg-primary"
+                    />
+                    playing
+                  </span>
+                </div>
+                <p className="text-xs font-mono-custom uppercase tracking-wider text-muted-foreground mb-1.5">
+                  I&apos;m listening to
+                </p>
+                <p className="text-sm font-medium text-foreground mb-1">&quot;Namastute&quot;</p>
+                <p className="text-xs text-muted-foreground">
+                  by Seedhe Maut from the album{' '}
+                  <a
+                    href="https://open.spotify.com/album/namastute"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Namastute
+                  </a>
+                </p>
+              </div>
+            </motion.div>
           </div>
         </div>
 

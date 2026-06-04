@@ -26,12 +26,12 @@ export default function AboutPage() {
           className="mb-16 text-center"
         >
           <motion.h1 
-            className="font-display text-5xl md:text-7xl font-bold mb-4"
+            className="font-display text-4xl sm:text-5xl md:text-7xl font-bold mb-4"
             whileHover={{ scale: 1.02 }}
           >
             Know who I am
           </motion.h1>
-          <p className="text-xl text-muted-foreground">
+          <p className="text-base md:text-xl text-muted-foreground">
             Pixels, logic & soul – that's my trinity
           </p>
         </motion.div>

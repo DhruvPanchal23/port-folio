@@ -337,7 +337,7 @@ export default function WorkPage() {
               Selected work · {projects.length} projects
             </span>
           </div>
-          <h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6">
+          <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6">
             Things I&apos;ve <span className="text-gradient">shipped.</span>
           </h1>
           <p className="text-muted-foreground md:text-lg max-w-2xl leading-relaxed">

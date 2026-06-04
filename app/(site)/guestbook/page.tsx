@@ -120,7 +120,7 @@ export default function GuestbookPage() {
               Guestbook · {entries.length} signed
             </span>
           </div>
-          <h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-5">
+          <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-5">
             Sign the <span className="text-gradient">wall.</span>
           </h1>
           <p className="text-muted-foreground md:text-lg max-w-xl leading-relaxed">

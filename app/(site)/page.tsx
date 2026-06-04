@@ -127,7 +127,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.05 }}
-                className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold leading-[1.02] tracking-tight"
+                className="font-display text-[2.75rem] xs:text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold leading-[1.02] tracking-tight"
               >
                 <span className="block">Pixels.</span>
                 <span className="block text-gradient">Logic.</span>
@@ -233,6 +233,35 @@ export default function HomePage() {
               className="relative lg:justify-self-end w-full max-w-md"
               data-testid="hero-now-card"
             >
+              {/* Namaste pop-up — floats above the /now card */}
+              <motion.div
+                initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 1.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="pointer-events-none absolute -top-7 left-1/2 z-20 -translate-x-1/2 sm:left-6 sm:translate-x-0"
+                data-testid="hero-namaste-pill"
+              >
+                <motion.div
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+                  className="relative inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/90 px-3 py-1.5 shadow-lg shadow-primary/10 backdrop-blur-xl"
+                >
+                  <motion.span
+                    animate={{ rotate: [0, 14, -8, 14, 0] }}
+                    transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 1.6, ease: 'easeInOut' }}
+                    className="text-base leading-none"
+                    aria-hidden
+                  >
+                    🙏
+                  </motion.span>
+                  <span className="font-mono-custom text-[11px] uppercase tracking-[0.18em] text-foreground/90">
+                    Namaste · welcome
+                  </span>
+                  {/* Pointer tail */}
+                  <span className="pointer-events-none absolute -bottom-1 left-6 h-2 w-2 rotate-45 rounded-sm border-b border-r border-primary/30 bg-card/90" />
+                </motion.div>
+              </motion.div>
+
               <div className="relative rounded-2xl border border-border bg-card/60 p-6 backdrop-blur-xl shadow-2xl shadow-primary/5">
                 <div className="flex items-center justify-between mb-5">
                   <div className="text-[10px] font-mono-custom uppercase tracking-[0.18em] text-muted-foreground">

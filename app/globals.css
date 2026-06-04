@@ -10,20 +10,20 @@
     --card-foreground: 0 0% 6%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 6%;
-    --primary: 188 95% 38%;
+    --primary: 18 88% 48%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 96%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 94%;
     --muted-foreground: 0 0% 38%;
-    --accent: 188 95% 38%;
+    --accent: 18 88% 48%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 88%;
     --input: 0 0% 88%;
-    --ring: 188 95% 38%;
-    --chart-1: 188 95% 38%;
+    --ring: 18 88% 48%;
+    --chart-1: 18 88% 48%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
@@ -36,26 +36,26 @@
   }
 
   .dark {
-    --background: 220 14% 5%;
+    --background: 24 14% 5%;
     --foreground: 0 0% 96%;
-    --card: 220 13% 8%;
+    --card: 24 13% 8%;
     --card-foreground: 0 0% 96%;
-    --popover: 220 13% 8%;
+    --popover: 24 13% 8%;
     --popover-foreground: 0 0% 96%;
-    --primary: 187 92% 58%;
-    --primary-foreground: 220 14% 5%;
-    --secondary: 220 13% 12%;
+    --primary: 18 88% 58%;
+    --primary-foreground: 24 14% 5%;
+    --secondary: 24 13% 12%;
     --secondary-foreground: 0 0% 96%;
-    --muted: 220 13% 12%;
+    --muted: 24 13% 12%;
     --muted-foreground: 0 0% 62%;
-    --accent: 187 92% 58%;
-    --accent-foreground: 220 14% 5%;
+    --accent: 18 88% 58%;
+    --accent-foreground: 24 14% 5%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 13% 16%;
-    --input: 220 13% 16%;
-    --ring: 187 92% 58%;
-    --chart-1: 187 92% 58%;
+    --border: 24 13% 16%;
+    --input: 24 13% 16%;
+    --ring: 18 88% 58%;
+    --chart-1: 18 88% 58%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
@@ -144,7 +144,7 @@
   .font-mono-custom { font-family: 'JetBrains Mono', monospace; }
 
   .text-gradient {
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(180, 80%, 70%));
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(35, 90%, 65%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -169,8 +169,8 @@
     border: 1px solid rgba(255, 255, 255, 0.6);
   }
 
-  .section-padding { @apply py-24 md:py-32; }
-  .container-max { @apply max-w-7xl mx-auto px-6 md:px-8 lg:px-12; }
+  .section-padding { @apply py-16 md:py-24 lg:py-32; }
+  .container-max { @apply max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12; }
 
   .scrollbar-thin::-webkit-scrollbar { width: 4px; }
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
