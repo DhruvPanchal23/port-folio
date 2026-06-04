@@ -10,7 +10,8 @@ export default function EarthCanvas() {
     <div className="w-full h-[500px] md:h-[600px]">
       <Canvas
         camera={{ position: [0, 0, 8], fov: 45 }}
-        style={{ background: 'transparent' }}
+        gl={{ antialias: true, alpha: true }}
+        dpr={[1, 2]}
       >
         <Suspense fallback={null}>
           <ambientLight intensity={0.5} />
