@@ -47,6 +47,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `(function(){try{var k='theme';var t=localStorage.getItem(k);var sys=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var r=t==='system'?sys:t==='light'?'light':'dark';document.documentElement.classList.toggle('dark',r==='dark')}catch(e){}})();`,
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Person',
+              name: 'Dhruv Panchal',
+              url: 'https://dhruvpanchal.dev',
+              email: 'dhruvpanchal.dev@gmail.com',
+              jobTitle: 'Full Stack Developer & Designer',
+              description: 'Full-stack developer, graphic designer & creative technologist.',
+              alumniOf: {
+                '@type': 'CollegeOrUniversity',
+                name: 'Sardar Vallabhbhai National Institute of Technology',
+              },
+              knowsAbout: ['React', 'Next.js', 'TypeScript', 'Node.js', 'MongoDB', 'UI/UX Design'],
+              sameAs: [
+                'https://github.com/dhruvpanchal',
+                'https://linkedin.com/in/dhruv-panchal',
+                'https://twitter.com/dhruvpanchal',
+              ],
+            }),
+          }}
+        />
       </head>
       <body className={inter.className}>{children}</body>
     </html>
