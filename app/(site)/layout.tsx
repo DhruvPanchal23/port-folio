@@ -1,4 +1,4 @@
-import AppThemeProvider from '@/components/theme/AppThemeProvider';
+import { AppThemeProvider } from '@/components/providers/AppThemeProvider';
 import SiteShell from '@/components/SiteShell';
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
