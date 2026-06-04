@@ -1,129 +1,174 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useCommandMenu } from './CommandMenuProvider';
-import { 
-  Search, 
-  Home, 
-  User, 
-  Briefcase, 
-  FileText, 
-  Mail, 
-  Github, 
-  Linkedin, 
+import {
+  Search,
+  Home,
+  User,
+  Briefcase,
+  FileText,
+  Mail,
+  Github,
+  Linkedin,
   Twitter,
   BookOpen,
   Star,
   Link as LinkIcon,
   MessageSquare,
   Settings,
-  ArrowRight,
+  CornerDownLeft,
+  Sparkles,
+  type LucideIcon,
 } from 'lucide-react';
 
-const commands = [
+type CommandItem = {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  href: string;
+  hint?: string;
+  external?: boolean;
+  keywords?: string[];
+};
+
+type CommandCategory = {
+  category: string;
+  emoji?: string;
+  items: CommandItem[];
+};
+
+const commands: CommandCategory[] = [
   {
-    category: 'Pages',
+    category: 'Navigate',
     items: [
-      { id: 'home', label: 'Home', icon: Home, href: '/', keywords: ['home', 'landing'] },
-      { id: 'about', label: 'About', icon: User, href: '/about', keywords: ['about', 'bio', 'profile'] },
-      { id: 'work', label: 'Work', icon: Briefcase, href: '/work', keywords: ['work', 'projects', 'portfolio'] },
-      { id: 'resume', label: 'Resume', icon: FileText, href: '/resume', keywords: ['resume', 'cv', 'experience'] },
-      { id: 'blog', label: 'Blog', icon: BookOpen, href: '/blog', keywords: ['blog', 'articles', 'writing'] },
+      { id: 'home', label: 'Home', icon: Home, href: '/', hint: 'g h', keywords: ['home', 'landing'] },
+      { id: 'about', label: 'About', icon: User, href: '/about', hint: 'g a', keywords: ['bio', 'profile'] },
+      { id: 'work', label: 'Selected Work', icon: Briefcase, href: '/work', hint: 'g w', keywords: ['projects', 'portfolio'] },
+      { id: 'resume', label: 'Resume', icon: FileText, href: '/resume', hint: 'g r', keywords: ['cv', 'experience'] },
+      { id: 'blog', label: 'Blog', icon: BookOpen, href: '/blog', hint: 'g b', keywords: ['articles', 'writing'] },
     ],
   },
   {
     category: 'Connect',
     items: [
-      { id: 'contact', label: 'Get in Touch', icon: Mail, href: '/connect', keywords: ['contact', 'email', 'connect'] },
-      { id: 'guestbook', label: 'Guestbook', icon: MessageSquare, href: '/guestbook', keywords: ['guestbook', 'sign', 'message'] },
-      { id: 'testimonials', label: 'Testimonials', icon: Star, href: '/testimonials', keywords: ['testimonials', 'reviews'] },
-      { id: 'feedback', label: 'Send Feedback', icon: MessageSquare, href: '/feedback', keywords: ['feedback', 'suggest'] },
+      { id: 'contact', label: 'Start a conversation', icon: Mail, href: '/connect', hint: 'g c', keywords: ['contact', 'email'] },
+      { id: 'guestbook', label: 'Sign the Guestbook', icon: MessageSquare, href: '/guestbook', keywords: ['sign', 'message'] },
+      { id: 'testimonials', label: 'Testimonials', icon: Star, href: '/testimonials', keywords: ['reviews', 'praise'] },
+      { id: 'feedback', label: 'Send Feedback', icon: Sparkles, href: '/feedback', keywords: ['suggest'] },
     ],
   },
   {
-    category: 'Links',
+    category: 'Elsewhere',
     items: [
-      { id: 'github', label: 'GitHub', icon: Github, href: 'https://github.com/dhruvpanchal', external: true },
-      { id: 'linkedin', label: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com/in/dhruv-panchal', external: true },
-      { id: 'twitter', label: 'Twitter', icon: Twitter, href: 'https://twitter.com/dhruvpanchal', external: true },
-      { id: 'all-links', label: 'All Links', icon: LinkIcon, href: '/links', keywords: ['links', 'social'] },
+      { id: 'github', label: 'GitHub', icon: Github, href: 'https://github.com/dhruvpanchal', hint: '↗', external: true },
+      { id: 'linkedin', label: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com/in/dhruv-panchal', hint: '↗', external: true },
+      { id: 'twitter', label: 'Twitter / X', icon: Twitter, href: 'https://twitter.com/dhruvpanchal', hint: '↗', external: true },
+      { id: 'all-links', label: 'All Links', icon: LinkIcon, href: '/links', keywords: ['social'] },
     ],
   },
   {
-    category: 'More',
+    category: 'Setup',
     items: [
-      { id: 'engine-room', label: 'Engine Room', icon: Settings, href: '/engine-room', keywords: ['uses', 'tools', 'setup'] },
-      { id: 'admin', label: 'Admin', icon: Settings, href: '/admin', keywords: ['admin', 'dashboard', 'manage'] },
+      { id: 'engine-room', label: 'Engine Room — my setup', icon: Settings, href: '/engine-room', keywords: ['uses', 'tools'] },
+      { id: 'admin', label: 'Admin Panel', icon: Settings, href: '/admin', keywords: ['dashboard', 'manage'] },
     ],
   },
 ];
+
+function highlight(text: string, term: string) {
+  if (!term) return text;
+  const idx = text.toLowerCase().indexOf(term.toLowerCase());
+  if (idx === -1) return text;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark className="bg-transparent text-primary font-semibold">
+        {text.slice(idx, idx + term.length)}
+      </mark>
+      {text.slice(idx + term.length)}
+    </>
+  );
+}
 
 export default function SiteCommandMenu() {
   const { open, setOpen } = useCommandMenu();
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const filteredCommands = commands.map(category => ({
-    ...category,
-    items: category.items.filter(item => {
-      const searchLower = search.toLowerCase();
-      return (
-        item.label.toLowerCase().includes(searchLower) ||
-        item.keywords?.some(k => k.includes(searchLower))
-      );
-    }),
-  })).filter(category => category.items.length > 0);
+  const isMac =
+    typeof navigator !== 'undefined' && /Mac|iPhone|iPod|iPad/i.test(navigator.platform);
 
-  const allItems = filteredCommands.flatMap(c => c.items);
+  const filtered = useMemo(() => {
+    const term = search.toLowerCase();
+    return commands
+      .map((c) => ({
+        ...c,
+        items: c.items.filter(
+          (it) =>
+            it.label.toLowerCase().includes(term) ||
+            it.keywords?.some((k) => k.includes(term))
+        ),
+      }))
+      .filter((c) => c.items.length > 0);
+  }, [search]);
 
-  const handleSelect = useCallback((item: any) => {
-    setOpen(false);
-    setSearch('');
-    setSelectedIndex(0);
+  const allItems = useMemo(() => filtered.flatMap((c) => c.items), [filtered]);
 
-    if (item.external) {
-      window.open(item.href, '_blank');
-    } else {
-      router.push(item.href);
-    }
-  }, [router, setOpen]);
+  const handleSelect = useCallback(
+    (item: CommandItem) => {
+      setOpen(false);
+      setSearch('');
+      setSelectedIndex(0);
+      if (item.external) {
+        window.open(item.href, '_blank', 'noopener,noreferrer');
+      } else {
+        router.push(item.href);
+      }
+    },
+    [router, setOpen]
+  );
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setOpen(!open);
       }
-
       if (!open) return;
-
       if (e.key === 'Escape') {
         setOpen(false);
         setSearch('');
         setSelectedIndex(0);
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev + 1) % allItems.length);
+        setSelectedIndex((p) => (p + 1) % Math.max(allItems.length, 1));
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev - 1 + allItems.length) % allItems.length);
+        setSelectedIndex((p) => (p - 1 + allItems.length) % Math.max(allItems.length, 1));
       } else if (e.key === 'Enter' && allItems[selectedIndex]) {
         e.preventDefault();
         handleSelect(allItems[selectedIndex]);
       }
     };
-
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open, setOpen, allItems, selectedIndex, handleSelect]);
 
-  // Reset selected index when search changes
   useEffect(() => {
     setSelectedIndex(0);
   }, [search]);
+
+  // Focus input when opening
+  useEffect(() => {
+    if (open) {
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, [open]);
 
   return (
     <AnimatePresence>
@@ -134,52 +179,93 @@ export default function SiteCommandMenu() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
             onClick={() => setOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            className="fixed inset-0 z-[80] bg-background/40 backdrop-blur-md"
+            data-testid="cmdk-backdrop"
           />
 
-          {/* Command Menu */}
-          <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-8 md:p-16 overflow-y-auto">
+          <div className="fixed inset-0 z-[81] flex items-start justify-center p-4 sm:p-8 md:pt-[14vh] overflow-y-auto pointer-events-none">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, scale: 0.97, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.2 }}
-              className="w-full max-w-2xl bg-background border border-border rounded-2xl shadow-2xl overflow-hidden"
+              exit={{ opacity: 0, scale: 0.97, y: 6 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
+              className="pointer-events-auto w-full max-w-2xl overflow-hidden rounded-2xl border border-border bg-card/95 shadow-2xl shadow-black/40 backdrop-blur-2xl"
+              data-testid="cmdk-panel"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Command palette"
             >
-              {/* Search Input */}
-              <div className="flex items-center gap-3 px-4 py-4 border-b border-border">
-                <Search className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+              {/* Animated cyan halo */}
+              <div className="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-primary/80 to-transparent" />
+              <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-48 w-2/3 rounded-full bg-primary/10 blur-3xl" />
+
+              {/* Header / Input */}
+              <div className="relative flex items-center gap-3 border-b border-border px-5 py-4">
+                <Search size={16} className="text-primary flex-shrink-0" />
                 <input
+                  ref={inputRef}
                   type="text"
-                  placeholder="Search for pages, links, or actions..."
+                  placeholder="Type a command, page, or just vibe…"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground"
-                  autoFocus
+                  className="flex-1 bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground/70 font-mono-custom"
+                  data-testid="cmdk-input"
                 />
-                <kbd className="hidden sm:inline-block px-2 py-1 text-xs font-mono text-muted-foreground bg-muted rounded border border-border">
-                  ESC
+                <kbd className="hidden sm:inline-flex h-6 items-center gap-1 rounded-md border border-border bg-muted/60 px-1.5 font-mono-custom text-[10px] text-muted-foreground">
+                  esc
                 </kbd>
               </div>
 
               {/* Results */}
-              <div className="max-h-[60vh] overflow-y-auto">
-                {filteredCommands.length === 0 ? (
-                  <div className="px-4 py-8 text-center text-muted-foreground">
-                    No results found for "{search}"
+              <div className="relative max-h-[58vh] overflow-y-auto scrollbar-thin py-2">
+                {filtered.length === 0 ? (
+                  <div className="px-5 py-12 text-center">
+                    <Sparkles size={20} className="mx-auto mb-3 text-primary/70" />
+                    <p className="text-sm font-medium text-foreground">No matches.</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Try{' '}
+                      <button
+                        onClick={() => setSearch('work')}
+                        className="font-mono-custom text-primary hover:underline"
+                      >
+                        &quot;work&quot;
+                      </button>
+                      ,{' '}
+                      <button
+                        onClick={() => setSearch('connect')}
+                        className="font-mono-custom text-primary hover:underline"
+                      >
+                        &quot;connect&quot;
+                      </button>
+                      , or{' '}
+                      <button
+                        onClick={() => setSearch('github')}
+                        className="font-mono-custom text-primary hover:underline"
+                      >
+                        &quot;github&quot;
+                      </button>
+                      .
+                    </p>
                   </div>
                 ) : (
-                  <div className="py-2">
-                    {filteredCommands.map((category, categoryIndex) => (
-                      <div key={category.category} className={categoryIndex > 0 ? 'mt-3' : ''}>
-                        <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  filtered.map((category, catIdx) => (
+                    <div key={category.category} className={catIdx > 0 ? 'mt-2' : ''}>
+                      <div className="flex items-center gap-2 px-5 py-1.5">
+                        <span className="font-mono-custom text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                           {category.category}
-                        </div>
+                        </span>
+                        <span className="h-px flex-1 bg-border/60" />
+                        <span className="font-mono-custom text-[10px] text-muted-foreground/60">
+                          {String(category.items.length).padStart(2, '0')}
+                        </span>
+                      </div>
+                      <div className="px-2">
                         {category.items.map((item, itemIndex) => {
-                          const globalIndex = filteredCommands
-                            .slice(0, categoryIndex)
+                          const globalIndex = filtered
+                            .slice(0, catIdx)
                             .reduce((acc, cat) => acc + cat.items.length, 0) + itemIndex;
                           const isSelected = globalIndex === selectedIndex;
                           const Icon = item.icon;
@@ -189,44 +275,81 @@ export default function SiteCommandMenu() {
                               key={item.id}
                               onClick={() => handleSelect(item)}
                               onMouseEnter={() => setSelectedIndex(globalIndex)}
-                              className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${
+                              data-testid={`cmdk-item-${item.id}`}
+                              className={`group relative w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-all ${
                                 isSelected
-                                  ? 'bg-primary/10 text-primary'
-                                  : 'text-foreground hover:bg-muted'
+                                  ? 'bg-primary/10 text-foreground'
+                                  : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
                               }`}
                             >
-                              <Icon size={18} className="flex-shrink-0" />
-                              <span className="flex-1 text-left font-medium">{item.label}</span>
+                              {/* Selected indicator bar */}
                               {isSelected && (
-                                <ArrowRight size={16} className="text-primary" />
+                                <motion.span
+                                  layoutId="cmdk-indicator"
+                                  className="absolute left-0 top-1/2 h-6 w-0.5 -translate-y-1/2 rounded-full bg-primary"
+                                />
+                              )}
+
+                              <span
+                                className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border transition-colors ${
+                                  isSelected
+                                    ? 'border-primary/40 bg-primary/10 text-primary'
+                                    : 'border-border bg-background/40 text-muted-foreground'
+                                }`}
+                              >
+                                <Icon size={15} />
+                              </span>
+
+                              <div className="flex-1 min-w-0">
+                                <div className="text-sm font-medium leading-tight truncate">
+                                  {highlight(item.label, search)}
+                                </div>
+                                <div className="mt-0.5 font-mono-custom text-[10px] uppercase tracking-wider text-muted-foreground/70 truncate">
+                                  {item.external ? new URL(item.href).hostname : item.href}
+                                </div>
+                              </div>
+
+                              {item.hint && (
+                                <kbd
+                                  className={`hidden sm:inline-flex h-6 items-center justify-center rounded-md border px-2 font-mono-custom text-[10px] tracking-wider ${
+                                    isSelected
+                                      ? 'border-primary/40 bg-primary/10 text-primary'
+                                      : 'border-border bg-muted/40 text-muted-foreground'
+                                  }`}
+                                >
+                                  {item.hint}
+                                </kbd>
+                              )}
+                              {isSelected && !item.hint && (
+                                <CornerDownLeft size={13} className="text-primary" />
                               )}
                             </button>
                           );
                         })}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))
                 )}
               </div>
 
               {/* Footer */}
-              <div className="px-4 py-3 border-t border-border bg-muted/30">
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5">
-                      <kbd className="px-1.5 py-0.5 bg-background border border-border rounded">↑</kbd>
-                      <kbd className="px-1.5 py-0.5 bg-background border border-border rounded">↓</kbd>
-                      <span>Navigate</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <kbd className="px-1.5 py-0.5 bg-background border border-border rounded">↵</kbd>
-                      <span>Select</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <kbd className="px-1.5 py-0.5 bg-background border border-border rounded">ESC</kbd>
-                    <span>Close</span>
-                  </div>
+              <div className="flex items-center justify-between gap-4 border-t border-border bg-muted/20 px-5 py-2.5">
+                <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
+                  <span className="flex items-center gap-1.5">
+                    <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-background/60 px-1 font-mono-custom text-[10px]">↑</kbd>
+                    <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border border-border bg-background/60 px-1 font-mono-custom text-[10px]">↓</kbd>
+                    move
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <kbd className="inline-flex h-5 items-center justify-center rounded border border-border bg-background/60 px-1.5 font-mono-custom text-[10px]">↵</kbd>
+                    open
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground/80">
+                  <span className="hidden sm:inline">launched with</span>
+                  <kbd className="inline-flex h-5 items-center justify-center rounded border border-border bg-background/60 px-1.5 font-mono-custom text-[10px]">
+                    {isMac ? '⌘' : 'Ctrl'} K
+                  </kbd>
                 </div>
               </div>
             </motion.div>

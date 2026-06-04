@@ -1,176 +1,275 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, Linkedin, Mail, Twitter, Globe, FileText, MessageSquare } from 'lucide-react';
+import {
+  ExternalLink,
+  Github,
+  Linkedin,
+  Mail,
+  Twitter,
+  Globe,
+  FileText,
+  MessageSquare,
+  Sparkles,
+  Coffee,
+  Music,
+  ArrowUpRight,
+  type LucideIcon,
+} from 'lucide-react';
 
-const links = [
+type Link = {
+  icon: LucideIcon;
+  title: string;
+  handle: string;
+  description: string;
+  url: string;
+  accent: string;
+  featured?: boolean;
+};
+
+const featured: Link[] = [
   {
-    category: 'Featured',
-    items: [
-      {
-        icon: Globe,
-        title: 'Website',
-        description: 'My personal portfolio website',
-        url: 'https://dhruvpanchal.dev',
-      },
-      {
-        icon: Linkedin,
-        title: 'LinkedIn',
-        description: 'Professional network & career updates',
-        url: 'https://linkedin.com/in/dhruv-panchal',
-      },
-      {
-        icon: Github,
-        title: 'GitHub',
-        description: 'Open source projects & contributions',
-        url: 'https://github.com/dhruvpanchal',
-      },
-      {
-        icon: Mail,
-        title: 'Email',
-        description: 'Direct communication for projects',
-        url: 'mailto:dhruvpanchal.dev@gmail.com',
-      },
-      {
-        icon: FileText,
-        title: 'Resume',
-        description: 'Download my latest resume',
-        url: '/resume',
-      },
-    ],
+    icon: Github,
+    title: 'GitHub',
+    handle: '@dhruvpanchal',
+    description: 'Open source, side quests, and the occasional dotfile.',
+    url: 'https://github.com/dhruvpanchal',
+    accent: 'from-foreground/20 to-foreground/5',
+    featured: true,
   },
   {
-    category: 'More',
-    items: [
-      {
-        icon: Twitter,
-        title: 'Twitter',
-        description: 'Thoughts, tech updates & random musings',
-        url: 'https://twitter.com/dhruvpanchal',
-      },
-      {
-        icon: Globe,
-        title: 'Projects',
-        description: 'Showcase of my development work',
-        url: '/work',
-      },
-      {
-        icon: MessageSquare,
-        title: 'Guestbook',
-        description: 'Leave a message for me',
-        url: '/guestbook',
-      },
-      {
-        icon: MessageSquare,
-        title: 'Feedback',
-        description: 'Help me improve my website',
-        url: '/feedback',
-      },
-    ],
+    icon: Linkedin,
+    title: 'LinkedIn',
+    handle: 'in/dhruv-panchal',
+    description: 'The polished, recruiter-friendly version of me.',
+    url: 'https://linkedin.com/in/dhruv-panchal',
+    accent: 'from-sky-500/30 to-blue-700/10',
+    featured: true,
+  },
+  {
+    icon: Mail,
+    title: 'Email',
+    handle: 'dhruvpanchal.dev@gmail.com',
+    description: 'Best for project work, collaborations, or just a hi.',
+    url: 'mailto:dhruvpanchal.dev@gmail.com',
+    accent: 'from-primary/30 to-cyan-500/10',
+    featured: true,
   },
 ];
 
+const social: Link[] = [
+  {
+    icon: Twitter,
+    title: 'Twitter / X',
+    handle: '@dhruvpanchal',
+    description: 'Half-formed thoughts and ship logs.',
+    url: 'https://twitter.com/dhruvpanchal',
+    accent: 'from-sky-400/20 to-cyan-500/5',
+  },
+  {
+    icon: Globe,
+    title: 'Personal Site',
+    handle: 'dhruvpanchal.dev',
+    description: 'You are here. Hi.',
+    url: 'https://dhruvpanchal.dev',
+    accent: 'from-violet-500/20 to-fuchsia-500/5',
+  },
+];
+
+const onSite: Link[] = [
+  {
+    icon: FileText,
+    title: 'Resume',
+    handle: '/resume',
+    description: 'Skills, experience, projects — the formal pitch.',
+    url: '/resume',
+    accent: 'from-amber-500/20 to-orange-500/5',
+  },
+  {
+    icon: Sparkles,
+    title: 'Engine Room',
+    handle: '/engine-room',
+    description: 'The tools, gear, and apps I use daily.',
+    url: '/engine-room',
+    accent: 'from-emerald-500/20 to-teal-500/5',
+  },
+  {
+    icon: MessageSquare,
+    title: 'Guestbook',
+    handle: '/guestbook',
+    description: 'Sign in, leave a mark, become part of the wall.',
+    url: '/guestbook',
+    accent: 'from-rose-500/20 to-pink-500/5',
+  },
+  {
+    icon: MessageSquare,
+    title: 'Feedback',
+    handle: '/feedback',
+    description: 'Spot a typo? Have a wild idea? Tell me.',
+    url: '/feedback',
+    accent: 'from-indigo-500/20 to-violet-500/5',
+  },
+];
+
+function LinkCard({ link, i, large = false }: { link: Link; i: number; large?: boolean }) {
+  const Icon = link.icon;
+  const isExternal = link.url.startsWith('http') || link.url.startsWith('mailto:');
+  return (
+    <motion.a
+      href={link.url}
+      target={isExternal && !link.url.startsWith('mailto:') ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: i * 0.05, duration: 0.45 }}
+      whileHover={{ y: -4 }}
+      data-testid={`links-card-${link.title.toLowerCase().replace(/\s|\//g, '-')}`}
+      className={`group relative flex overflow-hidden rounded-2xl border border-border bg-card/40 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 ${
+        large ? 'p-6 md:p-7' : 'p-5'
+      }`}
+    >
+      {/* Tinted background */}
+      <div
+        className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${link.accent} opacity-30 transition-opacity group-hover:opacity-60`}
+      />
+      <div className="pointer-events-none absolute inset-0 dot-grid opacity-20" />
+
+      <div className="relative flex w-full items-center gap-4">
+        <div
+          className={`flex flex-shrink-0 items-center justify-center rounded-xl border border-border bg-background/50 backdrop-blur-sm transition-all group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary ${
+            large ? 'h-14 w-14' : 'h-11 w-11'
+          }`}
+        >
+          <Icon size={large ? 22 : 18} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <h3
+              className={`font-display font-bold text-foreground group-hover:text-primary transition-colors ${
+                large ? 'text-lg' : 'text-base'
+              }`}
+            >
+              {link.title}
+            </h3>
+            <span className="font-mono-custom text-[10px] uppercase tracking-wider text-muted-foreground/70 truncate">
+              {link.handle}
+            </span>
+          </div>
+          <p
+            className={`mt-0.5 text-muted-foreground leading-snug truncate ${
+              large ? 'text-sm' : 'text-xs'
+            }`}
+          >
+            {link.description}
+          </p>
+        </div>
+        <ArrowUpRight
+          size={16}
+          className="flex-shrink-0 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary"
+        />
+      </div>
+    </motion.a>
+  );
+}
+
 export default function LinksPage() {
   return (
-    <div className="min-h-screen py-24">
-      <div className="container-max max-w-3xl">
+    <div className="min-h-screen pt-28 pb-24">
+      <div className="container-max max-w-4xl">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-12 text-center"
+          className="mb-12"
         >
-          <h1 className="font-display text-5xl md:text-7xl font-bold mb-4">
-            All Links
+          <div className="mb-4 flex items-center gap-3">
+            <span className="h-px w-8 bg-primary" />
+            <span className="font-mono-custom text-xs uppercase tracking-[0.2em] text-primary">
+              All my links
+            </span>
+          </div>
+          <h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-5">
+            One page,<br /> every <span className="text-gradient">door.</span>
           </h1>
-          <p className="text-xl text-muted-foreground">
-            Find me across the web
+          <p className="text-muted-foreground md:text-lg max-w-xl leading-relaxed">
+            Pick whichever rabbit hole you&apos;re in the mood for. They all lead back to me.
           </p>
         </motion.div>
 
-        {/* Links */}
-        <div className="space-y-12">
-          {links.map((section, sectionIndex) => (
-            <motion.div
-              key={section.category}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: sectionIndex * 0.1 }}
-            >
-              <h2 className="font-display text-2xl font-bold text-foreground mb-6">
-                {section.category}
-              </h2>
-              <div className="space-y-4">
-                {section.items.map((link, i) => {
-                  const Icon = link.icon;
-                  const isExternal = link.url.startsWith('http');
-                  const LinkComponent = isExternal ? 'a' : 'a';
-                  
-                  return (
-                    <motion.div
-                      key={link.title}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: sectionIndex * 0.1 + i * 0.05 }}
-                    >
-                      <LinkComponent
-                        href={link.url}
-                        target={isExternal ? '_blank' : undefined}
-                        rel={isExternal ? 'noopener noreferrer' : undefined}
-                        className="group glass rounded-xl p-6 flex items-center gap-4 hover:border-primary/50 transition-all duration-300 block"
-                      >
-                        <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                          <Icon className="h-6 w-6 text-primary" />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
-                            {link.title}
-                          </h3>
-                          <p className="text-sm text-muted-foreground">{link.description}</p>
-                        </div>
-                        <ExternalLink
-                          size={18}
-                          className="text-muted-foreground group-hover:text-primary transition-colors"
-                        />
-                      </LinkComponent>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {/* Featured trio */}
+        <section className="mb-12">
+          <h2 className="mb-4 font-mono-custom text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            ⭐ Featured
+          </h2>
+          <div className="grid grid-cols-1 gap-3">
+            {featured.map((l, i) => (
+              <LinkCard key={l.title} link={l} i={i} large />
+            ))}
+          </div>
+        </section>
 
-        {/* Quick Contact */}
+        {/* Social */}
+        <section className="mb-12">
+          <h2 className="mb-4 font-mono-custom text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            ✦ Around the web
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {social.map((l, i) => (
+              <LinkCard key={l.title} link={l} i={i} />
+            ))}
+          </div>
+        </section>
+
+        {/* On-site */}
+        <section className="mb-16">
+          <h2 className="mb-4 font-mono-custom text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            ⌂ On this site
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {onSite.map((l, i) => (
+              <LinkCard key={l.title} link={l} i={i} />
+            ))}
+          </div>
+        </section>
+
+        {/* Quick contact strip */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mt-16 glass rounded-2xl p-8 text-center"
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-card via-background to-card p-8 md:p-10"
         >
-          <h2 className="font-display text-2xl font-bold text-foreground mb-4">
-            Quick Contact
-          </h2>
-          <p className="text-muted-foreground mb-6">
-            Need to reach me quickly? Here are the best ways
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <a
-              href="mailto:dhruvpanchal.dev@gmail.com"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95"
-            >
-              <Mail size={16} />
-              Email Me
-            </a>
-            <a
-              href="https://linkedin.com/in/dhruv-panchal"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground rounded-xl font-medium hover:bg-muted transition-all duration-200"
-            >
-              <Linkedin size={16} />
-              LinkedIn
-            </a>
+          <div className="absolute inset-0 dot-grid opacity-30" />
+          <div className="absolute -top-24 -right-24 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
+          <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Coffee size={14} className="text-primary" />
+                <span className="font-mono-custom text-xs uppercase tracking-wider text-muted-foreground">
+                  Coffee&apos;s on me
+                </span>
+              </div>
+              <h3 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+                Want the fastest way<br className="hidden md:block" /> to reach me?
+              </h3>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="mailto:dhruvpanchal.dev@gmail.com"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:scale-[1.03] active:scale-95"
+                data-testid="links-quick-email"
+              >
+                <Mail size={15} /> Email me
+              </a>
+              <a
+                href="https://linkedin.com/in/dhruv-panchal"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-muted/50"
+              >
+                <Linkedin size={15} /> Connect
+              </a>
+            </div>
           </div>
         </motion.div>
       </div>

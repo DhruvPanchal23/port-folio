@@ -1,7 +1,7 @@
 export const ACCENT_STORAGE_KEY = 'portfolio-accent';
 
 export const ACCENT_PRESETS = [
-  { id: 'default', label: 'Mint', swatch: 'hsl(156 72% 55%)' },
+  { id: 'default', label: 'Cyan', swatch: 'hsl(187 92% 58%)' },
   { id: 'ocean', label: 'Ocean', swatch: 'hsl(190 85% 48%)' },
   { id: 'violet', label: 'Violet', swatch: 'hsl(262 83% 58%)' },
   { id: 'ember', label: 'Ember', swatch: 'hsl(18 88% 55%)' },

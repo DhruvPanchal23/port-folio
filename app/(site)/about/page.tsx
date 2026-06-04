@@ -46,17 +46,25 @@ export default function AboutPage() {
             <h2 className="font-display text-3xl font-bold text-foreground mb-6">About Me</h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                I'm Dhruv Panchal – final year B.Tech CSE student, full stack developer, 
-                Graphic designer & creative technologist. I build web experiences that are 
-                more about the journey than just utility.
+                I&apos;m Dhruv Panchal — a final-year B.Tech CSE student, full-stack developer, and creative
+                technologist. I build web experiences that are more about the journey than just utility.
+              </p>
+              <p className="rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-foreground">
+                <span className="inline-flex items-center gap-1.5 font-mono-custom text-[10px] uppercase tracking-wider text-primary">
+                  <span className="relative inline-flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+                  </span>
+                  Currently working on
+                </span>
+                <br />
+                <span className="font-medium">Cinematica</span> — an invite-only film journal for serious
+                cinephiles, plus my research thesis on{' '}
+                <span className="font-medium">AI in Digital Forensics</span>.
               </p>
               <p>
-                Currently diving deep into AI in Digital Forensics, blending cybersecurity 
-                with intelligent systems to create innovative solutions.
-              </p>
-              <p>
-                My work sits at the intersection of code & creativity. I'm always open to 
-                collaborations or just a good conversation over coffee + code.
+                My work sits at the intersection of code & creativity. I&apos;m always open to
+                collaborations — or just a good conversation over coffee + code.
               </p>
             </div>
           </motion.div>
