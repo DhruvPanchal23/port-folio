@@ -11,6 +11,9 @@ import SiteCommandMenu from '@/components/SiteCommandMenu';
 import ScrollProgress from '@/components/ScrollProgress';
 import SkipToContent from '@/components/SkipToContent';
 import { CommandMenuProvider } from '@/components/CommandMenuProvider';
+import { PortfolioSettingsProvider } from '@/components/providers/PortfolioSettingsProvider';
+import { Toaster } from '@/components/ui/sonner';
+import LoadingScreen from '@/components/LoadingScreen';
 
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -18,17 +21,21 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <CommandMenuProvider>
-      <SkipToContent />
-      <SiteBackground />
-      <CustomCursor />
-      <SiteCommandMenu />
-      <ScrollProgress />
-      <Navigation />
-      <main id="main-content" className="relative z-10">
-        <PageTransition>{children}</PageTransition>
-      </main>
-      <Footer />
-    </CommandMenuProvider>
+    <PortfolioSettingsProvider>
+      <CommandMenuProvider>
+        <LoadingScreen />
+        <Toaster position="bottom-right" richColors closeButton />
+        <SkipToContent />
+        <SiteBackground />
+        <CustomCursor />
+        <SiteCommandMenu />
+        <ScrollProgress />
+        <Navigation />
+        <main id="main-content" className="relative z-10">
+          <PageTransition>{children}</PageTransition>
+        </main>
+        <Footer />
+      </CommandMenuProvider>
+    </PortfolioSettingsProvider>
   );
 }

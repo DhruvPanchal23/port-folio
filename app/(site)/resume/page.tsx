@@ -1,10 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { Download, Mail, Linkedin, Github, MapPin, ExternalLink } from 'lucide-react';
+import { Mail, Linkedin, Github, MapPin } from 'lucide-react';
+import { usePortfolioSettingsContext } from '@/components/providers/PortfolioSettingsProvider';
+import ResumeDownloadLink from '@/components/ResumeDownloadLink';
+import { getMailtoUrl } from '@/lib/portfolio-settings';
 
 export default function ResumePage() {
+  const { settings } = usePortfolioSettingsContext();
+  const { profile, social, site } = settings;
+
   return (
     <div className="min-h-screen py-24">
       <div className="container-max max-w-5xl">
@@ -18,10 +23,13 @@ export default function ResumePage() {
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold mb-2">Resume</h1>
             <p className="text-base md:text-lg text-muted-foreground">A snapshot of what I&apos;ve built, broken & shipped.</p>
           </div>
-          <button className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg shadow-primary/20">
-            <Download size={16} />
+          <ResumeDownloadLink
+            asButton
+            showIcon
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
+          >
             Download PDF
-          </button>
+          </ResumeDownloadLink>
         </motion.div>
 
         <div className="space-y-12">
@@ -32,24 +40,30 @@ export default function ResumePage() {
             transition={{ delay: 0.1 }}
             className="glass rounded-2xl p-8"
           >
-            <h2 className="font-display text-3xl font-bold text-foreground mb-4">Dhruv Panchal</h2>
+            <h2 className="font-display text-3xl font-bold text-foreground mb-4">{profile.name}</h2>
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <MapPin size={14} />
-                Surat, India
+                {site.current_location}
               </span>
-              <a href="mailto:dhruvpanchal.dev@gmail.com" className="flex items-center gap-1 hover:text-foreground transition-colors">
-                <Mail size={14} />
-                dhruvpanchal.dev@gmail.com
-              </a>
-              <a href="https://linkedin.com/in/dhruv-panchal" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-foreground transition-colors">
-                <Linkedin size={14} />
-                LinkedIn
-              </a>
-              <a href="https://github.com/dhruvpanchal" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-foreground transition-colors">
-                <Github size={14} />
-                GitHub
-              </a>
+              {social.email && (
+                <a href={getMailtoUrl(social.email)} className="flex items-center gap-1 hover:text-foreground transition-colors">
+                  <Mail size={14} />
+                  {social.email}
+                </a>
+              )}
+              {social.linkedin && (
+                <a href={social.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-foreground transition-colors">
+                  <Linkedin size={14} />
+                  LinkedIn
+                </a>
+              )}
+              {social.github && (
+                <a href={social.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-foreground transition-colors">
+                  <Github size={14} />
+                  GitHub
+                </a>
+              )}
             </div>
           </motion.div>
 
@@ -212,7 +226,7 @@ export default function ResumePage() {
                 '100% client satisfaction rate in freelance projects',
                 'Led team of 4 developers in college hackathon',
                 'Contributed to 5+ open source projects on GitHub',
-                'Speaker at college tech symposium on \'Web Security\'',
+                "Speaker at college tech symposium on 'Web Security'",
               ].map((achievement, i) => (
                 <li key={i} className="flex items-start gap-2 text-muted-foreground">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />

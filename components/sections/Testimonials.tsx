@@ -1,17 +1,11 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import { motion, useInView, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Testimonial } from '@/lib/supabase';
-
-const PLACEHOLDER_TESTIMONIALS: Testimonial[] = [
-  { id: '1', name: 'Sarah Chen', role: 'CTO', company: 'TechVentures Inc.', avatar: '', content: 'Working with Alex was transformative. The attention to detail, the clean code, and the ability to translate our vision into reality exceeded all expectations. The product launched ahead of schedule and users love it.', rating: 5, status: 'published', sort_order: 1, created_at: '' },
-  { id: '2', name: 'Marcus Rodriguez', role: 'Founder', company: 'Launchpad Studio', avatar: '', content: 'Alex doesn\'t just build websites — he builds experiences. Our conversion rate tripled after the redesign, and the codebase is so clean our new developers can onboard in days. Exceptional.', rating: 5, status: 'published', sort_order: 2, created_at: '' },
-  { id: '3', name: 'Priya Sharma', role: 'Product Lead', company: 'Finova', avatar: '', content: 'The level of craft and professionalism is rare to find. Alex delivered a complex fintech dashboard that our compliance team, design team, and users all celebrate. I\'d hire him again without hesitation.', rating: 5, status: 'published', sort_order: 3, created_at: '' },
-  { id: '4', name: 'James Whitfield', role: 'CEO', company: 'CreativeHQ', avatar: '', content: 'From concept to launch in 6 weeks. The speed, quality, and communication were all A+. Alex is the definition of a 10x engineer. We\'ll be working together on all future projects.', rating: 5, status: 'published', sort_order: 4, created_at: '' },
-  { id: '5', name: 'Nina Patel', role: 'Design Director', company: 'Horizon Labs', avatar: '', content: 'I\'ve worked with many developers, but Alex is the rare combination of brilliant engineer and design-conscious builder. He asks the right questions and delivers beyond what you imagined.', rating: 5, status: 'published', sort_order: 5, created_at: '' },
-];
+import { fetchPublishedTestimonials } from '@/lib/cms-fetch';
+import { mapTestimonial } from '@/lib/cms-fetch';
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   const initials = testimonial.name.split(' ').map(n => n[0]).join('');
@@ -42,13 +36,20 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   );
 }
 
-export default function Testimonials({ testimonials }: { testimonials?: Testimonial[] }) {
+export default function Testimonials({ testimonials: propTestimonials }: { testimonials?: Testimonial[] }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-100px' });
   const trackRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const items = testimonials || PLACEHOLDER_TESTIMONIALS;
+  const [items, setItems] = useState<Testimonial[]>(propTestimonials || []);
+
+  useEffect(() => {
+    if (propTestimonials?.length) return;
+    fetchPublishedTestimonials().then((data) => {
+      setItems(data.map((t) => mapTestimonial(t) as unknown as Testimonial));
+    });
+  }, [propTestimonials]);
 
   const checkScroll = () => {
     const el = trackRef.current;

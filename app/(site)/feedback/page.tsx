@@ -14,12 +14,13 @@ import {
 } from '@/components/ui/select';
 import { Send, Lightbulb, Bug, Heart, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
+import { submitFeedbackForm } from '@/lib/submissions';
 
 export default function FeedbackPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    category: 'general',
+    category: 'general' as 'general' | 'suggestion' | 'bug' | 'appreciation',
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,12 +29,19 @@ export default function FeedbackPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate submission
-    setTimeout(() => {
-      toast.success('Feedback submitted! Thank you for helping improve this website.');
-      setFormData({ name: '', email: '', category: 'general', message: '' });
+    const { error } = await submitFeedbackForm(formData);
+
+    if (error) {
+      toast.error('Could not submit feedback', { description: error });
       setIsSubmitting(false);
-    }, 1500);
+      return;
+    }
+
+    toast.success('Feedback submitted!', {
+      description: 'Thank you for helping improve this website.',
+    });
+    setFormData({ name: '', email: '', category: 'general', message: '' });
+    setIsSubmitting(false);
   };
 
   return (
@@ -143,7 +151,12 @@ export default function FeedbackPage() {
                   </label>
                   <Select
                     value={formData.category}
-                    onValueChange={(value) => setFormData({ ...formData, category: value })}
+                    onValueChange={(value) =>
+                      setFormData({
+                        ...formData,
+                        category: value as 'general' | 'suggestion' | 'bug' | 'appreciation',
+                      })
+                    }
                   >
                     <SelectTrigger className="bg-muted border-border">
                       <SelectValue />

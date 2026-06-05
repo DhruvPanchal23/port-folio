@@ -4,25 +4,13 @@ import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useCommandMenu } from './CommandMenuProvider';
+import { Search, CornerDownLeft, Sparkles, type LucideIcon } from 'lucide-react';
 import {
-  Search,
-  Home,
-  User,
-  Briefcase,
-  FileText,
-  Mail,
-  Github,
-  Linkedin,
-  Twitter,
-  BookOpen,
-  Star,
-  Link as LinkIcon,
-  MessageSquare,
-  Settings,
-  CornerDownLeft,
-  Sparkles,
-  type LucideIcon,
-} from 'lucide-react';
+  fetchEnabledCommandItems,
+  getCommandIcon,
+  groupCommandItems,
+  type CommandItemRecord,
+} from '@/lib/command-items';
 
 type CommandItem = {
   id: string;
@@ -36,47 +24,8 @@ type CommandItem = {
 
 type CommandCategory = {
   category: string;
-  emoji?: string;
   items: CommandItem[];
 };
-
-const commands: CommandCategory[] = [
-  {
-    category: 'Navigate',
-    items: [
-      { id: 'home', label: 'Home', icon: Home, href: '/', hint: 'g h', keywords: ['home', 'landing'] },
-      { id: 'about', label: 'About', icon: User, href: '/about', hint: 'g a', keywords: ['bio', 'profile'] },
-      { id: 'work', label: 'Selected Work', icon: Briefcase, href: '/work', hint: 'g w', keywords: ['projects', 'portfolio'] },
-      { id: 'resume', label: 'Resume', icon: FileText, href: '/resume', hint: 'g r', keywords: ['cv', 'experience'] },
-      { id: 'blog', label: 'Blog', icon: BookOpen, href: '/blog', hint: 'g b', keywords: ['articles', 'writing'] },
-    ],
-  },
-  {
-    category: 'Connect',
-    items: [
-      { id: 'contact', label: 'Start a conversation', icon: Mail, href: '/connect', hint: 'g c', keywords: ['contact', 'email'] },
-      { id: 'guestbook', label: 'Sign the Guestbook', icon: MessageSquare, href: '/guestbook', keywords: ['sign', 'message'] },
-      { id: 'testimonials', label: 'Testimonials', icon: Star, href: '/testimonials', keywords: ['reviews', 'praise'] },
-      { id: 'feedback', label: 'Send Feedback', icon: Sparkles, href: '/feedback', keywords: ['suggest'] },
-    ],
-  },
-  {
-    category: 'Elsewhere',
-    items: [
-      { id: 'github', label: 'GitHub', icon: Github, href: 'https://github.com/dhruvpanchal', hint: '↗', external: true },
-      { id: 'linkedin', label: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com/in/dhruv-panchal', hint: '↗', external: true },
-      { id: 'twitter', label: 'Twitter / X', icon: Twitter, href: 'https://twitter.com/dhruvpanchal', hint: '↗', external: true },
-      { id: 'all-links', label: 'All Links', icon: LinkIcon, href: '/links', keywords: ['social'] },
-    ],
-  },
-  {
-    category: 'Setup',
-    items: [
-      { id: 'engine-room', label: 'Engine Room — my setup', icon: Settings, href: '/engine-room', keywords: ['uses', 'tools'] },
-      { id: 'admin', label: 'Admin Panel', icon: Settings, href: '/admin', keywords: ['dashboard', 'manage'] },
-    ],
-  },
-];
 
 function highlight(text: string, term: string) {
   if (!term) return text;
@@ -93,15 +42,38 @@ function highlight(text: string, term: string) {
   );
 }
 
+function toCommandItem(record: CommandItemRecord): CommandItem {
+  return {
+    id: record.slug,
+    label: record.label,
+    icon: getCommandIcon(record.icon),
+    href: record.href,
+    hint: record.hint || undefined,
+    external: record.external,
+    keywords: record.keywords,
+  };
+}
+
 export default function SiteCommandMenu() {
   const { open, setOpen } = useCommandMenu();
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [commands, setCommands] = useState<CommandCategory[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const isMac =
     typeof navigator !== 'undefined' && /Mac|iPhone|iPod|iPad/i.test(navigator.platform);
+
+  useEffect(() => {
+    fetchEnabledCommandItems().then((items) => {
+      const grouped = groupCommandItems(items).map((g) => ({
+        category: g.category,
+        items: g.items.map(toCommandItem),
+      }));
+      setCommands(grouped);
+    });
+  }, [open]);
 
   const filtered = useMemo(() => {
     const term = search.toLowerCase();
@@ -115,7 +87,7 @@ export default function SiteCommandMenu() {
         ),
       }))
       .filter((c) => c.items.length > 0);
-  }, [search]);
+  }, [search, commands]);
 
   const allItems = useMemo(() => filtered.flatMap((c) => c.items), [filtered]);
 
@@ -163,7 +135,6 @@ export default function SiteCommandMenu() {
     setSelectedIndex(0);
   }, [search]);
 
-  // Focus input when opening
   useEffect(() => {
     if (open) {
       requestAnimationFrame(() => inputRef.current?.focus());
@@ -174,7 +145,6 @@ export default function SiteCommandMenu() {
     <AnimatePresence>
       {open && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -198,11 +168,9 @@ export default function SiteCommandMenu() {
               aria-modal="true"
               aria-label="Command palette"
             >
-              {/* Animated cyan halo */}
               <div className="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-primary/80 to-transparent" />
               <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-48 w-2/3 rounded-full bg-primary/10 blur-3xl" />
 
-              {/* Header / Input */}
               <div className="relative flex items-center gap-3 border-b border-border px-5 py-4">
                 <Search size={16} className="text-primary flex-shrink-0" />
                 <input
@@ -219,36 +187,11 @@ export default function SiteCommandMenu() {
                 </kbd>
               </div>
 
-              {/* Results */}
               <div className="relative max-h-[58vh] overflow-y-auto scrollbar-thin py-2">
                 {filtered.length === 0 ? (
                   <div className="px-5 py-12 text-center">
                     <Sparkles size={20} className="mx-auto mb-3 text-primary/70" />
                     <p className="text-sm font-medium text-foreground">No matches.</p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Try{' '}
-                      <button
-                        onClick={() => setSearch('work')}
-                        className="font-mono-custom text-primary hover:underline"
-                      >
-                        &quot;work&quot;
-                      </button>
-                      ,{' '}
-                      <button
-                        onClick={() => setSearch('connect')}
-                        className="font-mono-custom text-primary hover:underline"
-                      >
-                        &quot;connect&quot;
-                      </button>
-                      , or{' '}
-                      <button
-                        onClick={() => setSearch('github')}
-                        className="font-mono-custom text-primary hover:underline"
-                      >
-                        &quot;github&quot;
-                      </button>
-                      .
-                    </p>
                   </div>
                 ) : (
                   filtered.map((category, catIdx) => (
@@ -285,7 +228,6 @@ export default function SiteCommandMenu() {
                                   : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
                               }`}
                             >
-                              {/* Selected indicator bar */}
                               {isSelected && (
                                 <motion.span
                                   layoutId="cmdk-indicator"
@@ -335,7 +277,6 @@ export default function SiteCommandMenu() {
                 )}
               </div>
 
-              {/* Footer */}
               <div className="flex items-center justify-between gap-4 border-t border-border bg-muted/20 px-5 py-2.5">
                 <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
                   <span className="flex items-center gap-1.5">
@@ -349,7 +290,6 @@ export default function SiteCommandMenu() {
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground/80">
-                  <span className="hidden sm:inline">launched with</span>
                   <kbd className="inline-flex h-5 items-center justify-center rounded border border-border bg-background/60 px-1.5 font-mono-custom text-[10px]">
                     {isMac ? '⌘' : 'Ctrl'} K
                   </kbd>

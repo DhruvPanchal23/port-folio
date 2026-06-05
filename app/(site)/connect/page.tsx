@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { submitContactForm } from '@/lib/submissions';
 
 export default function ConnectPage() {
   const [formData, setFormData] = useState({
@@ -27,13 +28,20 @@ export default function ConnectPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate submission
-    setTimeout(() => {
-      toast.success('Message sent successfully! I\'ll get back to you soon.');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+
+    const { error } = await submitContactForm(formData);
+
+    if (error) {
+      toast.error('Could not send message', { description: error });
       setIsSubmitting(false);
-    }, 1500);
+      return;
+    }
+
+    toast.success('Message sent successfully!', {
+      description: "I'll get back to you soon.",
+    });
+    setFormData({ name: '', email: '', subject: '', message: '' });
+    setIsSubmitting(false);
   };
 
   return (

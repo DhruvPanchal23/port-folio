@@ -5,10 +5,7 @@ import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import {
   ArrowUpRight,
-  Github,
-  Linkedin,
   Mail,
-  Twitter,
   MapPin,
   Clock,
   Coffee,
@@ -18,6 +15,13 @@ import {
   Cpu,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { usePortfolioSettingsContext } from '@/components/providers/PortfolioSettingsProvider';
+import ResumeDownloadLink from '@/components/ResumeDownloadLink';
+import HeroAvailabilityBadge from '@/components/hero/HeroAvailabilityBadge';
+import MultilingualWelcomeTicker from '@/components/hero/MultilingualWelcomeTicker';
+import NowLiveCard from '@/components/hero/NowLiveCard';
+import { getPrimarySocialLinks } from '@/lib/social-links';
+import { useNowCard } from '@/hooks/useNowCard';
 
 const CSSGlobe = dynamic(() => import('@/components/3d/CSSGlobe'), { ssr: false });
 
@@ -59,13 +63,12 @@ const SERVICES = [
   },
 ];
 
-const RECENT = [
-  { quarter: 'Now', title: 'Cinematica — invite-only film journal', tag: 'Building' },
-  { quarter: 'Q1 ’26', title: 'AI in Digital Forensics — research thesis', tag: 'Shipping' },
-  { quarter: 'Q4 ’25', title: 'Personal site v3 — this one', tag: 'Shipped' },
-];
-
 export default function HomePage() {
+  const { settings } = usePortfolioSettingsContext();
+  const { site, social, profile } = settings;
+  const { config: nowConfig, items: nowItems } = useNowCard();
+  const socialLinks = getPrimarySocialLinks(social);
+
   // Subtle parallax for hero accent
   const heroRef = useRef<HTMLDivElement>(null);
   const mx = useMotionValue(0);
@@ -105,22 +108,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-16 items-center">
             {/* LEFT — Headline & meta */}
             <div>
-              {/* Status pill */}
-              <motion.div
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/40 px-3 py-1.5 mb-8 backdrop-blur-sm"
-                data-testid="hero-status-pill"
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                </span>
-                <span className="text-xs font-mono-custom uppercase tracking-wider text-muted-foreground">
-                  Available for select projects · Feb 2026
-                </span>
-              </motion.div>
+              <MultilingualWelcomeTicker variant="inline" />
 
               {/* Headline */}
               <motion.h1
@@ -141,7 +129,7 @@ export default function HomePage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="mt-8 max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed"
               >
-                I&apos;m <span className="text-foreground font-medium">Dhruv Panchal</span> — a full-stack
+                I&apos;m <span className="text-foreground font-medium">{profile.name}</span> — a full-stack
                 developer & creative technologist building thoughtful web products. Currently shipping{' '}
                 <span className="text-foreground font-medium">Cinematica</span>, an invite-only film
                 journal for serious cinephiles.
@@ -169,14 +157,12 @@ export default function HomePage() {
                 >
                   Start a conversation
                 </Link>
-                <a
-                  href="/resume.pdf"
-                  download
+                <ResumeDownloadLink
                   className="hidden sm:inline-flex items-center gap-1.5 px-3 py-3 text-sm text-muted-foreground link-underline hover:text-foreground transition-colors"
                   data-testid="hero-resume-link"
                 >
                   Resume ↓
-                </a>
+                </ResumeDownloadLink>
               </motion.div>
 
               {/* Meta strip */}
@@ -187,7 +173,7 @@ export default function HomePage() {
                 className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-mono-custom text-muted-foreground"
               >
                 <span className="flex items-center gap-1.5">
-                  <MapPin size={12} className="text-primary" /> Surat, IN
+                  <MapPin size={12} className="text-primary" /> {site.current_location}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <Clock size={12} className="text-primary" /> GMT+5:30
@@ -204,12 +190,7 @@ export default function HomePage() {
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="mt-8 flex items-center gap-2"
               >
-                {[
-                  { icon: Github, href: 'https://github.com/dhruvpanchal', label: 'GitHub' },
-                  { icon: Twitter, href: 'https://twitter.com/dhruvpanchal', label: 'Twitter' },
-                  { icon: Linkedin, href: 'https://linkedin.com/in/dhruv-panchal', label: 'LinkedIn' },
-                  { icon: Mail, href: 'mailto:dhruvpanchal.dev@gmail.com', label: 'Email' },
-                ].map(({ icon: Icon, href, label }) => (
+                {socialLinks.map(({ icon: Icon, href, label }) => (
                   <a
                     key={label}
                     href={href}
@@ -233,83 +214,8 @@ export default function HomePage() {
               className="relative lg:justify-self-end w-full max-w-md"
               data-testid="hero-now-card"
             >
-              {/* Namaste pop-up — floats above the /now card */}
-              <motion.div
-                initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ delay: 1.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="pointer-events-none absolute -top-7 left-1/2 z-20 -translate-x-1/2 sm:left-6 sm:translate-x-0"
-                data-testid="hero-namaste-pill"
-              >
-                <motion.div
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="relative inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/90 px-3 py-1.5 shadow-lg shadow-primary/10 backdrop-blur-xl"
-                >
-                  <motion.span
-                    animate={{ rotate: [0, 14, -8, 14, 0] }}
-                    transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 1.6, ease: 'easeInOut' }}
-                    className="text-base leading-none"
-                    aria-hidden
-                  >
-                    🙏
-                  </motion.span>
-                  <span className="font-mono-custom text-[11px] uppercase tracking-[0.18em] text-foreground/90">
-                    Namaste · welcome
-                  </span>
-                  {/* Pointer tail */}
-                  <span className="pointer-events-none absolute -bottom-1 left-6 h-2 w-2 rotate-45 rounded-sm border-b border-r border-primary/30 bg-card/90" />
-                </motion.div>
-              </motion.div>
-
-              <div className="relative rounded-2xl border border-border bg-card/60 p-6 backdrop-blur-xl shadow-2xl shadow-primary/5">
-                <div className="flex items-center justify-between mb-5">
-                  <div className="text-[10px] font-mono-custom uppercase tracking-[0.18em] text-muted-foreground">
-                    /now
-                  </div>
-                  <span className="text-[10px] font-mono-custom text-primary">live</span>
-                </div>
-
-                <ul className="space-y-4">
-                  {RECENT.map((r) => (
-                    <li key={r.title} className="group flex items-start gap-3">
-                      <span className="mt-1 inline-flex h-6 w-12 items-center justify-center rounded-md border border-border bg-muted/40 font-mono-custom text-[10px] text-muted-foreground">
-                        {r.quarter}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-foreground leading-snug">
-                          {r.title}
-                        </div>
-                        <div className="mt-0.5 text-[11px] font-mono-custom uppercase tracking-wider text-primary">
-                          {r.tag}
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
-                  <span className="text-xs text-muted-foreground">Next drop</span>
-                  <span className="text-xs font-mono-custom text-foreground">~ 4 weeks</span>
-                </div>
-              </div>
-
-              {/* Floating tech chips */}
-              <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -top-3 -left-4 hidden sm:flex items-center gap-1.5 rounded-full border border-border bg-background/80 px-2.5 py-1 text-[11px] font-mono-custom text-muted-foreground backdrop-blur-md"
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                next.js · ts
-              </motion.div>
-              <motion.div
-                animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-                className="absolute -bottom-3 -right-2 hidden sm:flex items-center gap-1.5 rounded-full border border-border bg-background/80 px-2.5 py-1 text-[11px] font-mono-custom text-muted-foreground backdrop-blur-md"
-              >
-                supabase · postgres
-              </motion.div>
+              <HeroAvailabilityBadge status={site.availability_status} variant="floating" />
+              <NowLiveCard config={nowConfig} items={nowItems} />
             </motion.aside>
           </div>
         </div>
@@ -503,12 +409,14 @@ export default function HomePage() {
             <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-cyan-400/10 blur-3xl" />
 
             <div className="relative max-w-3xl">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1.5 backdrop-blur-sm">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-xs font-mono-custom uppercase tracking-wider text-muted-foreground">
-                  Open to opportunities
-                </span>
-              </div>
+              {site.open_to_work && (
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1.5 backdrop-blur-sm">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-xs font-mono-custom uppercase tracking-wider text-muted-foreground">
+                    Open to opportunities
+                  </span>
+                </div>
+              )}
               <h2 className="font-display text-4xl md:text-6xl font-bold leading-[1.05] mb-6">
                 Let&apos;s make<br /> something memorable.
               </h2>

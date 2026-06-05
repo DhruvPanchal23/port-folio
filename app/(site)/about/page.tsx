@@ -2,10 +2,40 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
-import { Download, Mail, MapPin, Calendar, Code2, Palette, Zap, Heart } from 'lucide-react';
-import { useRef } from 'react';
+import { Mail, MapPin, Calendar, Code2, Palette, Zap } from 'lucide-react';
+import { useMemo, useRef } from 'react';
+import { usePortfolioSettingsContext } from '@/components/providers/PortfolioSettingsProvider';
+import ResumeDownloadLink from '@/components/ResumeDownloadLink';
+import AboutGalleryCarousel from '@/components/about/AboutGalleryCarousel';
+import { useAboutGallery } from '@/hooks/useAboutGallery';
 
 export default function AboutPage() {
+  const { settings } = usePortfolioSettingsContext();
+  const { profile, site } = settings;
+  const { items: galleryItems, loading: galleryLoading } = useAboutGallery();
+
+  const carouselItems = useMemo(() => {
+    if (galleryItems.length > 0) {
+      return galleryItems.map((item) => ({
+        id: item.id,
+        title: item.title,
+        subtitle: item.subtitle,
+        image_url: item.image_url,
+      }));
+    }
+    if (profile.image_url) {
+      return [{ id: 'profile-fallback', title: 'I Create', subtitle: null, image_url: profile.image_url }];
+    }
+    return [];
+  }, [galleryItems, profile.image_url]);
+
+  const fallbackInitials = profile.name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -46,7 +76,7 @@ export default function AboutPage() {
             <h2 className="font-display text-3xl font-bold text-foreground mb-6">About Me</h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                I&apos;m Dhruv Panchal — a final-year B.Tech CSE student, full-stack developer, and creative
+                I&apos;m {profile.name} — a final-year B.Tech CSE student, full-stack developer, and creative
                 technologist. I build web experiences that are more about the journey than just utility.
               </p>
               <p className="rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-foreground">
@@ -73,12 +103,20 @@ export default function AboutPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex items-center justify-center"
+            className="flex items-center justify-center pb-10"
           >
-            <div className="relative w-72 h-72 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center overflow-hidden">
-              <div className="text-9xl font-display font-bold text-primary-foreground opacity-20">DP</div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-            </div>
+            {galleryLoading ? (
+              <div className="flex h-72 w-64 items-center justify-center">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+              </div>
+            ) : carouselItems.length > 0 ? (
+              <AboutGalleryCarousel items={carouselItems} fallbackInitials={fallbackInitials} />
+            ) : (
+              <AboutGalleryCarousel
+                items={[{ id: 'placeholder', title: 'I Create', subtitle: null, image_url: '' }]}
+                fallbackInitials={fallbackInitials}
+              />
+            )}
           </motion.div>
         </div>
 
@@ -93,7 +131,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { icon: Code2, label: 'Coding since', value: '2022' },
-              { icon: MapPin, label: 'Location', value: 'Surat, India' },
+              { icon: MapPin, label: 'Location', value: site.current_location },
               { icon: Zap, label: 'Status', value: 'Remote-ready' },
               { icon: Calendar, label: 'Currently', value: 'Final year B.Tech CSE' },
             ].map((fact, i) => (
@@ -113,13 +151,13 @@ export default function AboutPage() {
           viewport={{ once: true }}
           className="flex flex-wrap gap-4 justify-center mb-16"
         >
-          <Link
-            href="/resume"
+          <ResumeDownloadLink
+            asButton
+            showIcon
             className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95"
           >
-            <Download size={16} />
             Download Resume
-          </Link>
+          </ResumeDownloadLink>
           <Link
             href="/connect"
             className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground rounded-xl font-medium hover:bg-muted transition-all duration-200"

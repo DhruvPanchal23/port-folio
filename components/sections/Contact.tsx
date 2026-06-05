@@ -3,7 +3,8 @@
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Mail, MapPin, Clock, Github, Twitter, Linkedin, Instagram, ArrowUpRight, Send, CircleCheck as CheckCircle2, Loader as Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
+import { submitContactForm } from '@/lib/submissions';
 
 const PROJECT_TYPES = ['Web Development', 'UI/UX Design', 'Portfolio', 'Branding', 'SEO', 'Automation', 'Other'];
 const BUDGETS = ['< $2k', '$2k – $5k', '$5k – $15k', '$15k – $50k', '$50k+'];
@@ -26,22 +27,24 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) {
-      setError('Please fill in all required fields.');
-      return;
-    }
     setLoading(true);
     setError('');
-    try {
-      const { error: dbErr } = await supabase.from('contact_submissions').insert([form]);
-      if (dbErr) throw dbErr;
-      setSuccess(true);
-      setForm({ name: '', email: '', subject: '', message: '', project_type: '', budget: '' });
-    } catch (e) {
-      setError('Something went wrong. Please try again or email me directly.');
-    } finally {
+
+    const { error: submitError } = await submitContactForm(form);
+
+    if (submitError) {
+      setError(submitError);
+      toast.error('Could not send message', { description: submitError });
       setLoading(false);
+      return;
     }
+
+    setSuccess(true);
+    toast.success('Message sent successfully!', {
+      description: 'Thanks for reaching out — I will get back to you soon.',
+    });
+    setForm({ name: '', email: '', subject: '', message: '', project_type: '', budget: '' });
+    setLoading(false);
   };
 
   return (

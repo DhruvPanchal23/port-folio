@@ -2,20 +2,18 @@
 
 import { motion } from 'framer-motion';
 import {
-  ExternalLink,
-  Github,
-  Linkedin,
-  Mail,
-  Twitter,
-  Globe,
+  Coffee,
+  ArrowUpRight,
   FileText,
   MessageSquare,
   Sparkles,
-  Coffee,
-  Music,
-  ArrowUpRight,
+  Linkedin,
+  Mail,
   type LucideIcon,
 } from 'lucide-react';
+import { usePortfolioSettingsContext } from '@/components/providers/PortfolioSettingsProvider';
+import { getFeaturedLinks, getSecondarySocialLinks } from '@/lib/social-links';
+import { getMailtoUrl } from '@/lib/portfolio-settings';
 
 type Link = {
   icon: LucideIcon;
@@ -27,53 +25,13 @@ type Link = {
   featured?: boolean;
 };
 
-const featured: Link[] = [
-  {
-    icon: Github,
-    title: 'GitHub',
-    handle: '@dhruvpanchal',
-    description: 'Open source, side quests, and the occasional dotfile.',
-    url: 'https://github.com/dhruvpanchal',
-    accent: 'from-foreground/20 to-foreground/5',
-    featured: true,
-  },
-  {
-    icon: Linkedin,
-    title: 'LinkedIn',
-    handle: 'in/dhruv-panchal',
-    description: 'The polished, recruiter-friendly version of me.',
-    url: 'https://linkedin.com/in/dhruv-panchal',
-    accent: 'from-sky-500/30 to-blue-700/10',
-    featured: true,
-  },
-  {
-    icon: Mail,
-    title: 'Email',
-    handle: 'dhruvpanchal.dev@gmail.com',
-    description: 'Best for project work, collaborations, or just a hi.',
-    url: 'mailto:dhruvpanchal.dev@gmail.com',
-    accent: 'from-primary/30 to-cyan-500/10',
-    featured: true,
-  },
-];
-
-const social: Link[] = [
-  {
-    icon: Twitter,
-    title: 'Twitter / X',
-    handle: '@dhruvpanchal',
-    description: 'Half-formed thoughts and ship logs.',
-    url: 'https://twitter.com/dhruvpanchal',
-    accent: 'from-sky-400/20 to-cyan-500/5',
-  },
-  {
-    icon: Globe,
-    title: 'Personal Site',
-    handle: 'dhruvpanchal.dev',
-    description: 'You are here. Hi.',
-    url: 'https://dhruvpanchal.dev',
-    accent: 'from-violet-500/20 to-fuchsia-500/5',
-  },
+const ACCENTS = [
+  'from-foreground/20 to-foreground/5',
+  'from-sky-500/30 to-blue-700/10',
+  'from-primary/30 to-cyan-500/10',
+  'from-sky-400/20 to-cyan-500/5',
+  'from-violet-500/20 to-fuchsia-500/5',
+  'from-amber-500/20 to-orange-500/5',
 ];
 
 const onSite: Link[] = [
@@ -111,6 +69,18 @@ const onSite: Link[] = [
   },
 ];
 
+function toLinkCard(item: ReturnType<typeof getFeaturedLinks>[number], i: number, featured = false): Link {
+  return {
+    icon: item.icon,
+    title: item.label,
+    handle: item.handle || item.label,
+    description: item.description || '',
+    url: item.href,
+    accent: ACCENTS[i % ACCENTS.length],
+    featured,
+  };
+}
+
 function LinkCard({ link, i, large = false }: { link: Link; i: number; large?: boolean }) {
   const Icon = link.icon;
   const isExternal = link.url.startsWith('http') || link.url.startsWith('mailto:');
@@ -128,7 +98,6 @@ function LinkCard({ link, i, large = false }: { link: Link; i: number; large?: b
         large ? 'p-6 md:p-7' : 'p-5'
       }`}
     >
-      {/* Tinted background */}
       <div
         className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${link.accent} opacity-30 transition-opacity group-hover:opacity-60`}
       />
@@ -173,10 +142,15 @@ function LinkCard({ link, i, large = false }: { link: Link; i: number; large?: b
 }
 
 export default function LinksPage() {
+  const { settings } = usePortfolioSettingsContext();
+  const { social } = settings;
+
+  const featured = getFeaturedLinks(social).map((item, i) => toLinkCard(item, i, true));
+  const socialLinks = getSecondarySocialLinks(social).map((item, i) => toLinkCard(item, i + 3));
+
   return (
     <div className="min-h-screen pt-28 pb-24">
       <div className="container-max max-w-4xl">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -196,31 +170,32 @@ export default function LinksPage() {
           </p>
         </motion.div>
 
-        {/* Featured trio */}
-        <section className="mb-12">
-          <h2 className="mb-4 font-mono-custom text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            ⭐ Featured
-          </h2>
-          <div className="grid grid-cols-1 gap-3">
-            {featured.map((l, i) => (
-              <LinkCard key={l.title} link={l} i={i} large />
-            ))}
-          </div>
-        </section>
+        {featured.length > 0 && (
+          <section className="mb-12">
+            <h2 className="mb-4 font-mono-custom text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              ⭐ Featured
+            </h2>
+            <div className="grid grid-cols-1 gap-3">
+              {featured.map((l, i) => (
+                <LinkCard key={l.title} link={l} i={i} large />
+              ))}
+            </div>
+          </section>
+        )}
 
-        {/* Social */}
-        <section className="mb-12">
-          <h2 className="mb-4 font-mono-custom text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            ✦ Around the web
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {social.map((l, i) => (
-              <LinkCard key={l.title} link={l} i={i} />
-            ))}
-          </div>
-        </section>
+        {socialLinks.length > 0 && (
+          <section className="mb-12">
+            <h2 className="mb-4 font-mono-custom text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              ✦ Around the web
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {socialLinks.map((l, i) => (
+                <LinkCard key={`${l.title}-${i}`} link={l} i={i} />
+              ))}
+            </div>
+          </section>
+        )}
 
-        {/* On-site */}
         <section className="mb-16">
           <h2 className="mb-4 font-mono-custom text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             ⌂ On this site
@@ -232,7 +207,6 @@ export default function LinksPage() {
           </div>
         </section>
 
-        {/* Quick contact strip */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -254,21 +228,25 @@ export default function LinksPage() {
               </h3>
             </div>
             <div className="flex flex-wrap gap-3">
-              <a
-                href="mailto:dhruvpanchal.dev@gmail.com"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:scale-[1.03] active:scale-95"
-                data-testid="links-quick-email"
-              >
-                <Mail size={15} /> Email me
-              </a>
-              <a
-                href="https://linkedin.com/in/dhruv-panchal"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-muted/50"
-              >
-                <Linkedin size={15} /> Connect
-              </a>
+              {social.email && (
+                <a
+                  href={getMailtoUrl(social.email)}
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:scale-[1.03] active:scale-95"
+                  data-testid="links-quick-email"
+                >
+                  <Mail size={15} /> Email me
+                </a>
+              )}
+              {social.linkedin && (
+                <a
+                  href={social.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-muted/50"
+                >
+                  <Linkedin size={15} /> Connect
+                </a>
+              )}
             </div>
           </div>
         </motion.div>

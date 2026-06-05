@@ -2,14 +2,9 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Github, Twitter, Linkedin, Mail, ArrowUpRight, Briefcase, Wrench, MessageSquare, Music, Disc3 } from 'lucide-react';
-
-const socials = [
-  { icon: Linkedin, href: 'https://linkedin.com/in/dhruv-panchal', label: 'LinkedIn' },
-  { icon: Github, href: 'https://github.com/dhruvpanchal', label: 'GitHub' },
-  { icon: Mail, href: 'mailto:dhruvpanchal.dev@gmail.com', label: 'Mail' },
-  { icon: Twitter, href: 'https://twitter.com/dhruvpanchal', label: 'X (Twitter)' },
-];
+import { ArrowUpRight, Briefcase, Wrench, MessageSquare, Disc3 } from 'lucide-react';
+import { usePortfolioSettingsContext } from '@/components/providers/PortfolioSettingsProvider';
+import { getFooterSocialLinks } from '@/lib/social-links';
 
 const quickLinks = [
   { label: 'Uses', href: '/engine-room' },
@@ -18,6 +13,9 @@ const quickLinks = [
 ];
 
 export default function Footer() {
+  const { settings } = usePortfolioSettingsContext();
+  const { site, social, profile } = settings;
+  const socials = getFooterSocialLinks(social);
   const year = new Date().getFullYear();
 
   return (
@@ -29,14 +27,14 @@ export default function Footer() {
         <div className="py-16 md:py-20 border-b border-border">
           <div className="max-w-3xl">
             <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
-              MY SITE
+              {site.footer_cta_title || 'MY SITE'}
               <br />
-              <span className="text-gradient">Explore, Connect</span>
+              <span className="text-gradient">{site.footer_cta_subtitle || 'Explore, Connect'}</span>
               <br />
               <span className="text-muted-foreground text-2xl md:text-3xl">& Leave Your Mark</span>
             </h2>
             <p className="text-lg text-muted-foreground mb-2">
-              Explore, experiment && say hello
+              {site.footer_content}
             </p>
           </div>
         </div>
@@ -156,17 +154,18 @@ export default function Footer() {
                   I&apos;m listening to
                 </p>
                 <p className="text-sm font-medium text-foreground mb-1">&quot;Namastute&quot;</p>
-                <p className="text-xs text-muted-foreground">
-                  by Seedhe Maut from the album{' '}
-                  <a
-                    href="https://open.spotify.com/album/namastute"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    Namastute
-                  </a>
-                </p>
+                {social.spotify && (
+                  <p className="text-xs text-muted-foreground">
+                    <a
+                      href={social.spotify}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Listen on Spotify
+                    </a>
+                  </p>
+                )}
               </div>
             </motion.div>
           </div>
@@ -175,23 +174,25 @@ export default function Footer() {
         {/* Section 3: Availability */}
         <div className="py-12 md:py-16 border-b border-border">
           <div className="text-center max-w-3xl mx-auto">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Open to Work</span>
-            </div>
+            {site.open_to_work && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Open to Work</span>
+              </div>
+            )}
             <h3 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-4">
-              I'm available for full-time roles & freelance projects.
+              {site.open_to_work_headline || site.availability_status}
             </h3>
             <p className="text-muted-foreground mb-6">
-              I thrive on crafting dynamic web applications, and delivering seamless user experiences.
+              {site.open_to_work_description}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3 text-sm font-medium text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Briefcase size={14} />
-                Full Stack Developer
+                {profile.name}
               </span>
               <span>•</span>
-              <span>Remote Available</span>
+              <span>{site.current_location}</span>
             </div>
           </div>
         </div>
@@ -224,10 +225,10 @@ export default function Footer() {
         {/* Section 5: Copyright */}
         <div className="py-6 text-center">
           <p className="text-xs text-muted-foreground mb-1">
-            Current Version: 1.0 | Last Updated: July 2025
+            Current Version: {site.current_version} | Last Updated: {site.last_updated}
           </p>
           <p className="text-xs text-muted-foreground">
-            © {year} Dhruv Panchal • Crafted with Coffee, Playlists & Curiosity.
+            © {year} {profile.name} • {site.copyright_text}
           </p>
         </div>
       </div>

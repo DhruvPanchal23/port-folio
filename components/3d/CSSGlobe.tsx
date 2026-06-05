@@ -2,180 +2,231 @@
 
 import { motion } from 'framer-motion';
 
+type Node = {
+  id: string;
+  x: number;
+  y: number;
+  primary?: boolean;
+};
+
+const NODES: Node[] = [
+  { id: 'india', x: 58, y: 52, primary: true },
+  { id: 'london', x: 44, y: 30 },
+  { id: 'sf', x: 22, y: 36 },
+  { id: 'berlin', x: 50, y: 28 },
+  { id: 'singapore', x: 66, y: 56 },
+];
+
+const ROUTES: [string, string][] = [
+  ['india', 'london'],
+  ['india', 'sf'],
+  ['india', 'berlin'],
+  ['india', 'singapore'],
+  ['london', 'berlin'],
+  ['london', 'sf'],
+  ['berlin', 'singapore'],
+  ['sf', 'singapore'],
+];
+
+const PARALLELS = [-70, -50, -30, -10, 10, 30, 50, 70];
+const MERIDIANS = Array.from({ length: 12 }, (_, i) => i * 15);
+
+function nodeById(id: string) {
+  return NODES.find((n) => n.id === id)!;
+}
+
+function routePath(a: Node, b: Node) {
+  const mx = (a.x + b.x) / 2;
+  const my = (a.y + b.y) / 2 - 14;
+  return `M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`;
+}
+
+function WireframeLayer({ opacity = 1 }: { opacity?: number }) {
+  return (
+    <div className="absolute inset-0" style={{ transformStyle: 'preserve-3d', opacity }}>
+      {PARALLELS.map((lat) => {
+        const w = Math.abs(Math.cos((lat * Math.PI) / 180)) * 100;
+        return (
+          <div
+            key={`lat-${lat}`}
+            className="absolute inset-0"
+            style={{ transform: `rotateX(${lat}deg)`, transformStyle: 'preserve-3d' }}
+          >
+            <div
+              className="absolute left-1/2 top-1/2 rounded-full border border-primary/20"
+              style={{
+                width: `${w}%`,
+                height: `${w}%`,
+                transform: 'translate(-50%, -50%) rotateX(90deg) scaleY(0.34)',
+              }}
+            />
+          </div>
+        );
+      })}
+      {MERIDIANS.map((lon) => (
+        <div
+          key={`lon-${lon}`}
+          className="absolute inset-0"
+          style={{ transform: `rotateY(${lon}deg)`, transformStyle: 'preserve-3d' }}
+        >
+          <div
+            className="absolute left-1/2 top-1/2 h-full w-full rounded-full border border-primary/15"
+            style={{ transform: 'translate(-50%, -50%) scaleX(0.34)' }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function CSSGlobe() {
   return (
-    <div className="relative w-full h-[500px] md:h-[600px] flex items-center justify-center">
-      {/* Outer glow */}
+    <div className="relative flex h-[500px] w-full items-center justify-center md:h-[600px]">
       <motion.div
-        animate={{
-          scale: [1, 1.05, 1],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute w-96 h-96 rounded-full bg-primary/20 blur-3xl"
+        animate={{ opacity: [0.25, 0.42, 0.25], scale: [1, 1.06, 1] }}
+        transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+        className="pointer-events-none absolute h-72 w-72 rounded-full bg-primary/15 blur-3xl md:h-96 md:w-96"
       />
 
-      {/* Main globe */}
-      <div className="relative">
-        {/* Globe sphere */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 60,
-            repeat: Infinity,
-            ease: "linear",
+      <motion.div
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+        className="relative"
+        style={{ perspective: '1000px' }}
+      >
+        <div
+          className="pointer-events-none absolute -inset-[14%] rounded-full"
+          style={{
+            background:
+              'radial-gradient(circle, transparent 58%, hsl(var(--primary) / 0.07) 72%, hsl(var(--primary) / 0.14) 82%, transparent 100%)',
           }}
-          className="relative w-64 h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-br from-slate-800 via-slate-900 to-black border border-primary/20 shadow-2xl shadow-primary/10 overflow-hidden"
-        >
-          {/* Grid lines */}
-          <div className="absolute inset-0">
-            {/* Horizontal lines */}
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={`h-${i}`}
-                className="absolute left-0 right-0 border-t border-primary/20"
-                style={{ top: `${(i + 1) * 12.5}%` }}
-              />
-            ))}
-            {/* Vertical lines */}
-            {[...Array(12)].map((_, i) => (
-              <div
-                key={`v-${i}`}
-                className="absolute top-0 bottom-0 border-l border-primary/20"
-                style={{ left: `${(i + 1) * 8.33}%` }}
-              />
-            ))}
-          </div>
+        />
 
-          {/* Continents */}
-          <svg
-            className="absolute inset-0 w-full h-full opacity-30"
-            viewBox="0 0 100 100"
-            xmlns="http://www.w3.org/2000/svg"
+        <motion.div
+          animate={{ rotateY: 360 }}
+          transition={{ duration: 72, repeat: Infinity, ease: 'linear' }}
+          className="relative h-[280px] w-[280px] md:h-[320px] md:w-[320px]"
+          style={{ transformStyle: 'preserve-3d' }}
+        >
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: `
+                radial-gradient(circle at 32% 26%, hsl(var(--foreground) / 0.07), transparent 42%),
+                radial-gradient(circle at 68% 72%, hsl(var(--primary) / 0.1), transparent 48%),
+                radial-gradient(circle at 50% 50%, hsl(var(--card) / 0.55) 0%, hsl(var(--background) / 0.92) 68%, hsl(var(--background)) 100%)
+              `,
+              border: '1px solid hsl(var(--primary) / 0.22)',
+              boxShadow: `
+                inset 0 0 48px hsl(var(--primary) / 0.06),
+                inset -12px -18px 36px hsl(var(--background) / 0.85),
+                0 0 48px hsl(var(--primary) / 0.1)
+              `,
+              backdropFilter: 'blur(2px)',
+            }}
+          />
+
+          <WireframeLayer opacity={0.9} />
+
+          <motion.div
+            animate={{ rotateY: -360 }}
+            transition={{ duration: 96, repeat: Infinity, ease: 'linear' }}
+            className="absolute inset-[6%]"
+            style={{ transformStyle: 'preserve-3d' }}
           >
-            <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-primary" />
-            {/* Simplified continent shapes */}
-            <path
-              d="M 30 20 Q 35 15 40 20 L 45 25 L 40 30 Z"
-              fill="currentColor"
-              className="text-primary/40"
-            />
-            <path
-              d="M 60 35 Q 65 30 70 35 L 75 45 L 70 50 L 60 45 Z"
-              fill="currentColor"
-              className="text-primary/40"
-            />
-            <path
-              d="M 25 55 Q 30 50 35 55 L 40 65 L 30 70 Z"
-              fill="currentColor"
-              className="text-primary/40"
-            />
+            <WireframeLayer opacity={0.35} />
+          </motion.div>
+
+          <div
+            className="pointer-events-none absolute inset-0 rounded-full"
+            style={{
+              background:
+                'radial-gradient(circle at 28% 22%, hsl(var(--foreground) / 0.12), transparent 38%)',
+            }}
+          />
+
+          <svg
+            className="absolute inset-0 h-full w-full overflow-visible"
+            viewBox="0 0 100 100"
+            aria-hidden
+          >
+            <defs>
+              <linearGradient id="route-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+                <stop offset="45%" stopColor="hsl(var(--primary))" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            {ROUTES.map(([from, to], i) => (
+              <motion.path
+                key={`${from}-${to}`}
+                d={routePath(nodeById(from), nodeById(to))}
+                fill="none"
+                stroke="url(#route-grad)"
+                strokeWidth="0.35"
+                strokeLinecap="round"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{
+                  pathLength: [0.15, 1, 0.15],
+                  opacity: [0.15, 0.55, 0.15],
+                }}
+                transition={{
+                  duration: 5 + (i % 3),
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: i * 0.35,
+                }}
+              />
+            ))}
           </svg>
 
-          {/* Shine effect */}
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-full" />
-        </motion.div>
-
-        {/* Country markers */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 60,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-          className="absolute inset-0"
-        >
-          {/* UK */}
-          <motion.div
-            animate={{ scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="absolute top-1/4 left-1/3 w-3 h-3 rounded-full bg-blue-500 shadow-lg shadow-blue-500/50"
-          />
-          {/* India */}
-          <motion.div
-            animate={{ scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 2, repeat: Infinity, delay: 0.7 }}
-            className="absolute top-1/2 right-1/3 w-3 h-3 rounded-full bg-green-500 shadow-lg shadow-green-500/50"
-          />
-          {/* USA */}
-          <motion.div
-            animate={{ scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 2, repeat: Infinity, delay: 1.4 }}
-            className="absolute bottom-1/3 left-1/4 w-3 h-3 rounded-full bg-amber-500 shadow-lg shadow-amber-500/50"
-          />
-        </motion.div>
-
-        {/* Connection lines */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none">
-          <motion.path
-            d="M 80 60 Q 150 100 220 140"
-            stroke="url(#gradient1)"
-            strokeWidth="1"
-            fill="none"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 0.6 }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
-          <motion.path
-            d="M 220 140 Q 180 200 140 240"
-            stroke="url(#gradient2)"
-            strokeWidth="1"
-            fill="none"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 0.6 }}
-            transition={{ duration: 2, repeat: Infinity, delay: 0.7 }}
-          />
-          <defs>
-            <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0" />
-              <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
-            </linearGradient>
-            <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#10b981" stopOpacity="0" />
-              <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        {/* Orbiting particles */}
-        <motion.div
-          animate={{ rotate: -360 }}
-          transition={{
-            duration: 40,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-          className="absolute inset-0"
-        >
-          {[...Array(8)].map((_, i) => (
+          {NODES.map((node, i) => (
             <motion.div
-              key={i}
-              className="absolute w-1 h-1 rounded-full bg-primary/60"
+              key={node.id}
+              className="absolute"
               style={{
-                top: '50%',
-                left: '50%',
-                transform: `rotate(${i * 45}deg) translateX(150px)`,
+                left: `${node.x}%`,
+                top: `${node.y}%`,
+                transform: 'translate(-50%, -50%)',
               }}
               animate={{
-                scale: [0, 1, 0],
-                opacity: [0, 1, 0],
+                scale: node.primary ? [1, 1.35, 1] : [1, 1.2, 1],
+                opacity: node.primary ? [0.75, 1, 0.75] : [0.45, 0.85, 0.45],
               }}
               transition={{
-                duration: 3,
+                duration: node.primary ? 2.4 : 3,
                 repeat: Infinity,
-                delay: i * 0.2,
+                ease: 'easeInOut',
+                delay: i * 0.4,
               }}
-            />
+            >
+              {node.primary && (
+                <span
+                  className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-sm"
+                  aria-hidden
+                />
+              )}
+              <span
+                className={`relative block rounded-full bg-primary shadow-[0_0_10px_hsl(var(--primary)/0.55)] ${
+                  node.primary ? 'h-2.5 w-2.5' : 'h-1.5 w-1.5'
+                }`}
+              />
+              {node.primary && (
+                <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono-custom text-[8px] uppercase tracking-wider text-primary/70">
+                  BLR
+                </span>
+              )}
+            </motion.div>
           ))}
         </motion.div>
-      </div>
+
+        <div
+          className="pointer-events-none absolute inset-0 rounded-full border border-primary/10"
+          style={{
+            boxShadow: '0 0 32px hsl(var(--primary) / 0.12), 0 0 64px hsl(var(--primary) / 0.06)',
+          }}
+        />
+      </motion.div>
     </div>
   );
 }

@@ -11,15 +11,21 @@ export type Project = {
   slug: string;
   description: string;
   long_description: string;
+  tagline: string;
   cover_image: string;
   images: string[];
   tech_stack: string[];
   category: string;
   status: string;
+  display_status: string;
   featured: boolean;
+  is_private: boolean;
+  year: string;
   github_url: string;
   live_url: string;
   metrics: Record<string, string>;
+  performance_metrics: Record<string, unknown>;
+  case_study_sections: unknown[];
   sort_order: number;
   created_at: string;
   updated_at: string;
@@ -30,9 +36,12 @@ export type Testimonial = {
   name: string;
   role: string;
   company: string;
+  location: string;
   avatar: string;
   content: string;
   rating: number;
+  skills_tags: string[];
+  featured: boolean;
   status: string;
   sort_order: number;
   created_at: string;
@@ -58,6 +67,7 @@ export type BlogPost = {
   category: string;
   tags: string[];
   status: string;
+  featured: boolean;
   read_time: number;
   seo_title: string;
   seo_description: string;
@@ -98,4 +108,11 @@ export type FeedbackSubmission = {
   message: string;
   status: string;
   created_at: string;
+};
+
+export type PortfolioSettingRow = {
+  id: string;
+  key: string;
+  value: Record<string, unknown>;
+  updated_at: string;
 };
