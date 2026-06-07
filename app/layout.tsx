@@ -2,6 +2,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
+import { personSchema, websiteSchema, profilePageSchema } from '@/lib/structured-data';
+
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
@@ -48,28 +50,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <script
+          id="person-schema"
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Person',
-              name: 'Dhruv Panchal',
-              url: 'https://dhruvpanchal.dev',
-              email: 'dhruvpanchal.dev@gmail.com',
-              jobTitle: 'Full Stack Developer',
-              description: 'Full-stack developer, graphic designer & creative technologist.',
-              alumniOf: {
-                '@type': 'CollegeOrUniversity',
-                name: 'Sardar Vallabhbhai National Institute of Technology',
-              },
-              knowsAbout: ['React', 'Next.js', 'TypeScript', 'Node.js', 'MongoDB', 'UI/UX Design'],
-              sameAs: [
-                'https://github.com/dhruvpanchal',
-                'https://linkedin.com/in/dhruv-panchal',
-                'https://twitter.com/dhruvpanchal',
-              ],
-            }),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+        />
+        <script
+          id="website-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <script
+          id="profile-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageSchema) }}
         />
       </head>
       <body className={inter.className}>{children}</body>

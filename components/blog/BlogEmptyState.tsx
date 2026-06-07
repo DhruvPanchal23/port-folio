@@ -108,7 +108,7 @@ export default function BlogEmptyState() {
 
       <div className="mb-14 max-w-2xl border-l border-primary/25 pl-5 md:pl-6">
         <p className="font-mono-custom text-[11px] uppercase tracking-wider text-muted-foreground mb-3">
-          // notify
+          {"// notify"}
         </p>
         <p className="text-sm text-muted-foreground mb-4">
           Want to be notified when I publish?

@@ -72,7 +72,7 @@ function renderSection(section: CaseStudySection, project: ProjectRecord) {
           {images.map((src, i) => (
             <div key={i} className="rounded-xl overflow-hidden border border-border">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="" className="w-full h-auto" />
+              <img src={src} alt={`${project.title} screenshot ${i + 1}`} className="w-full h-auto" loading="lazy" />
             </div>
           ))}
         </div>

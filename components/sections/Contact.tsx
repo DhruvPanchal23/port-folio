@@ -6,10 +6,18 @@ import { Mail, MapPin, Clock, Github, Twitter, Linkedin, Instagram, ArrowUpRight
 import { toast } from 'sonner';
 import { submitContactForm } from '@/lib/submissions';
 
+import { usePortfolioSettingsContext } from '@/components/providers/PortfolioSettingsProvider';
+import { getPrimarySocialLinks } from '@/lib/social-links';
+import { getMailtoUrl } from '@/lib/portfolio-settings';
+
 const PROJECT_TYPES = ['Web Development', 'UI/UX Design', 'Portfolio', 'Branding', 'SEO', 'Automation', 'Other'];
 const BUDGETS = ['< $2k', '$2k – $5k', '$5k – $15k', '$15k – $50k', '$50k+'];
 
 export default function Contact() {
+  const { settings } = usePortfolioSettingsContext();
+  const { site, social, profile } = settings;
+  const socialLinks = getPrimarySocialLinks(social);
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-100px' });
 
@@ -105,9 +113,9 @@ export default function Contact() {
             {/* Contact info */}
             <div className="space-y-4">
               {[
-                { icon: Mail, label: 'Email', value: 'hello@alexrivera.dev', href: 'mailto:hello@alexrivera.dev' },
-                { icon: MapPin, label: 'Location', value: 'San Francisco, CA', href: null },
-                { icon: Clock, label: 'Timezone', value: 'PST (UTC-8)', href: null },
+                { icon: Mail, label: 'Email', value: social.email || 'dhruvpanchal.dev@gmail.com', href: getMailtoUrl(social.email || 'dhruvpanchal.dev@gmail.com') },
+                { icon: MapPin, label: 'Location', value: site.current_location || 'Surat, India', href: null },
+                { icon: Clock, label: 'Timezone', value: 'GMT+5:30 (IST)', href: null },
               ].map(({ icon: Icon, label, value, href }) => (
                 <div key={label} className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center shrink-0">
@@ -128,28 +136,25 @@ export default function Contact() {
             </div>
 
             {/* Socials */}
-            <div>
-              <p className="text-xs font-mono-custom text-muted-foreground tracking-widest uppercase mb-3">Find me on</p>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { icon: Github, href: 'https://github.com', label: 'GitHub' },
-                  { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
-                  { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-                  { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
-                ].map(({ icon: Icon, href, label }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-card text-xs text-muted-foreground hover:text-foreground hover:border-foreground/20 transition-all"
-                  >
-                    <Icon size={12} />
-                    {label}
-                  </a>
-                ))}
+            {socialLinks.length > 0 && (
+              <div>
+                <p className="text-xs font-mono-custom text-muted-foreground tracking-widest uppercase mb-3">Find me on</p>
+                <div className="flex flex-wrap gap-2">
+                  {socialLinks.map(({ icon: Icon, href, label }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-card text-xs text-muted-foreground hover:text-foreground hover:border-foreground/20 transition-all"
+                    >
+                      <Icon size={12} />
+                      {label}
+                    </a>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Calendly-style CTA */}
             <div className="p-5 rounded-2xl bg-primary/5 border border-primary/20">

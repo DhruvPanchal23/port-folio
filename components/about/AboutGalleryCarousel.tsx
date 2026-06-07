@@ -26,18 +26,18 @@ function cardStyle(offset: number) {
     return { x: 0, scale: 1, rotateZ: 0, opacity: 1, zIndex: 30 };
   }
   if (offset === -1) {
-    return { x: -52, scale: 0.9, rotateZ: -5, opacity: 0.72, zIndex: 20 };
+    return { x: -44, scale: 0.9, rotateZ: -5, opacity: 0.76, zIndex: 20 };
   }
   if (offset === 1) {
-    return { x: 52, scale: 0.9, rotateZ: 5, opacity: 0.72, zIndex: 20 };
+    return { x: 44, scale: 0.9, rotateZ: 5, opacity: 0.76, zIndex: 20 };
   }
   if (offset === -2) {
-    return { x: -88, scale: 0.82, rotateZ: -7, opacity: 0.38, zIndex: 10 };
+    return { x: -76, scale: 0.82, rotateZ: -8, opacity: 0.4, zIndex: 10 };
   }
   if (offset === 2) {
-    return { x: 88, scale: 0.82, rotateZ: 7, opacity: 0.38, zIndex: 10 };
+    return { x: 76, scale: 0.82, rotateZ: 8, opacity: 0.4, zIndex: 10 };
   }
-  return { x: offset * 40, scale: 0.75, rotateZ: 0, opacity: 0, zIndex: 0 };
+  return { x: offset * 35, scale: 0.75, rotateZ: 0, opacity: 0, zIndex: 0 };
 }
 
 export default function AboutGalleryCarousel({ items, fallbackInitials = 'DP' }: Props) {
@@ -75,7 +75,7 @@ export default function AboutGalleryCarousel({ items, fallbackInitials = 'DP' }:
       onMouseLeave={() => setPaused(false)}
       data-testid="about-gallery-carousel"
     >
-      <div className="relative h-80 w-full max-w-sm md:h-[22rem]">
+      <div className="relative h-72 w-72">
         <AnimatePresence mode="popLayout">
           {items.map((item, index) => {
             const offset = wrapOffset(index, active, length);
@@ -98,7 +98,7 @@ export default function AboutGalleryCarousel({ items, fallbackInitials = 'DP' }:
                 }}
                 transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                 onDragEnd={offset === 0 ? handleDragEnd : undefined}
-                className="absolute left-1/2 top-1/2 h-72 w-64 -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing"
+                className="absolute left-0 top-0 h-full w-full cursor-grab active:cursor-grabbing"
               >
                 <div className="relative h-full w-full overflow-hidden rounded-2xl border border-border/70 bg-card shadow-2xl shadow-black/25">
                   {item.image_url ? (

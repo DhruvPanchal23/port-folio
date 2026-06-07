@@ -61,6 +61,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'commands', label: 'Command Menu', icon: Command },
   { id: 'now', label: 'Now / Live Card', icon: Radio },
   { id: 'engine-room', label: 'Engine Room', icon: Wrench },
+  { id: 'about-gallery', label: 'About Gallery', icon: Images },
   { id: 'resume', label: 'Resume', icon: FileDown },
   { id: 'profile', label: 'Profile', icon: UserIcon },
   { id: 'social', label: 'Social Links', icon: Link2 },

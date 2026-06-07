@@ -56,7 +56,7 @@ export default function NotFoundPage() {
               In another system, it may be.
             </p>
             <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-              The page you're looking for seems to have drifted into hyperspace. 
+              The page you&apos;re looking for seems to have drifted into hyperspace. 
               Perhaps it was moved, deleted, or you mistyped the URL.
             </p>
           </motion.div>
@@ -124,7 +124,7 @@ export default function NotFoundPage() {
           <Link href="/connect" className="hover:text-foreground transition-colors">Connect</Link>
         </div>
         <p className="text-xs text-muted-foreground italic">
-          "May the force be with you... and better navigation skills too."
+          &quot;May the force be with you... and better navigation skills too.&quot;
         </p>
       </motion.div>
     </div>
