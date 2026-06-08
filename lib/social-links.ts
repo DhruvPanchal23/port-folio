@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import { Github, Globe, Linkedin, Mail, Music, Twitter } from 'lucide-react';
 import type { SocialSettings } from '@/lib/types/portfolio-settings';
-import { getMailtoUrl } from '@/lib/portfolio-settings';
+import { getEmailLinkProps } from '@/lib/portfolio-settings';
 
 export type SocialLinkItem = {
   icon: LucideIcon;
@@ -9,6 +9,8 @@ export type SocialLinkItem = {
   label: string;
   handle?: string;
   description?: string;
+  target?: string;
+  rel?: string;
 };
 
 export function getPrimarySocialLinks(social: SocialSettings): SocialLinkItem[] {
@@ -24,10 +26,13 @@ export function getPrimarySocialLinks(social: SocialSettings): SocialLinkItem[] 
     links.push({ icon: Linkedin, href: social.linkedin, label: 'LinkedIn' });
   }
   if (social.email) {
+    const emailProps = getEmailLinkProps(social.email);
     links.push({
       icon: Mail,
-      href: getMailtoUrl(social.email),
+      href: emailProps.href,
       label: 'Email',
+      target: emailProps.target,
+      rel: emailProps.rel,
     });
   }
 
@@ -40,7 +45,8 @@ export function getFooterSocialLinks(social: SocialSettings): SocialLinkItem[] {
   if (social.linkedin) links.push({ icon: Linkedin, href: social.linkedin, label: 'LinkedIn' });
   if (social.github) links.push({ icon: Github, href: social.github, label: 'GitHub' });
   if (social.email) {
-    links.push({ icon: Mail, href: getMailtoUrl(social.email), label: 'Mail' });
+    const emailProps = getEmailLinkProps(social.email);
+    links.push({ icon: Mail, href: emailProps.href, label: 'Mail', target: emailProps.target, rel: emailProps.rel });
   }
   if (social.twitter) links.push({ icon: Twitter, href: social.twitter, label: 'X (Twitter)' });
 
@@ -69,12 +75,15 @@ export function getFeaturedLinks(social: SocialSettings): SocialLinkItem[] {
     });
   }
   if (social.email) {
+    const emailProps = getEmailLinkProps(social.email);
     items.push({
       icon: Mail,
-      href: getMailtoUrl(social.email),
+      href: emailProps.href,
       label: 'Email',
       handle: social.email,
       description: 'Best for project work, collaborations, or just a hi.',
+      target: emailProps.target,
+      rel: emailProps.rel,
     });
   }
 

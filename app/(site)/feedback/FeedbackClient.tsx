@@ -16,6 +16,7 @@ import { Send, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 import { submitFeedbackForm } from '@/lib/submissions';
 import { usePortfolioSettingsContext } from '@/components/providers/PortfolioSettingsProvider';
+import { getEmailLinkProps } from '@/lib/portfolio-settings';
 
 export default function FeedbackClient() {
   const { settings } = usePortfolioSettingsContext();
@@ -90,7 +91,7 @@ export default function FeedbackClient() {
                 Prefer email? You can also reach me directly at:
               </p>
               <a
-                href={`mailto:${social.email || 'dhruvpanchal.dev@gmail.com'}`}
+                {...getEmailLinkProps(social.email || 'dhruvpanchal.dev@gmail.com')}
                 className="text-sm font-medium text-primary hover:underline"
               >
                 {social.email || 'dhruvpanchal.dev@gmail.com'}

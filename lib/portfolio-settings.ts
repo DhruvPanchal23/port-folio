@@ -134,6 +134,33 @@ export function getResumeDownloadUrl(resume: ResumeSettings): string | null {
   return resume.url;
 }
 
+/**
+ * Generates a Gmail compose URL for the given email address.
+ * Falls back to a mailto: link if the email is empty or invalid.
+ */
+export function getEmailUrl(email: string): string {
+  const clean = email.replace(/^mailto:/i, '').trim();
+  if (!clean) return 'mailto:';
+  return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(clean)}`;
+}
+
+/** @deprecated Use getEmailUrl instead */
 export function getMailtoUrl(email: string): string {
-  return email.startsWith('mailto:') ? email : `mailto:${email}`;
+  return getEmailUrl(email);
+}
+
+/**
+ * Returns anchor props { href, target, rel } for email links.
+ * Gmail URLs open in a new tab; falls back to mailto: if email is empty.
+ */
+export function getEmailLinkProps(email: string): { href: string; target: string; rel: string } {
+  const clean = email.replace(/^mailto:/i, '').trim();
+  if (!clean) {
+    return { href: 'mailto:', target: '_self', rel: '' };
+  }
+  return {
+    href: `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(clean)}`,
+    target: '_blank',
+    rel: 'noopener noreferrer',
+  };
 }

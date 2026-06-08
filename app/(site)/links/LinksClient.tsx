@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { usePortfolioSettingsContext } from '@/components/providers/PortfolioSettingsProvider';
 import { getFeaturedLinks, getSecondarySocialLinks } from '@/lib/social-links';
-import { getMailtoUrl } from '@/lib/portfolio-settings';
+import { getEmailLinkProps } from '@/lib/portfolio-settings';
 
 type Link = {
   icon: LucideIcon;
@@ -230,7 +230,7 @@ export default function LinksClient() {
             <div className="flex flex-wrap gap-3">
               {social.email && (
                 <a
-                  href={getMailtoUrl(social.email)}
+                  {...getEmailLinkProps(social.email)}
                   className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:scale-[1.03] active:scale-95"
                   data-testid="links-quick-email"
                 >

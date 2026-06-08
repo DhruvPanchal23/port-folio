@@ -301,7 +301,7 @@ export default function Work({ projects }: { projects?: Project[] }) {
           className="mt-12 text-center"
         >
           <p className="text-muted-foreground mb-4 text-sm">
-            These are a few highlights. I&apos;ve shipped 50+ projects across many industries.
+            These are a few highlights.
           </p>
           <a
             href="https://github.com"

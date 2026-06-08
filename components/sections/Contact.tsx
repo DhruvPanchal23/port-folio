@@ -8,7 +8,7 @@ import { submitContactForm } from '@/lib/submissions';
 
 import { usePortfolioSettingsContext } from '@/components/providers/PortfolioSettingsProvider';
 import { getPrimarySocialLinks } from '@/lib/social-links';
-import { getMailtoUrl } from '@/lib/portfolio-settings';
+import { getEmailLinkProps } from '@/lib/portfolio-settings';
 
 const PROJECT_TYPES = ['Web Development', 'UI/UX Design', 'Portfolio', 'Branding', 'SEO', 'Automation', 'Other'];
 const BUDGETS = ['< $2k', '$2k – $5k', '$5k – $15k', '$15k – $50k', '$50k+'];
@@ -112,11 +112,15 @@ export default function Contact() {
 
             {/* Contact info */}
             <div className="space-y-4">
-              {[
-                { icon: Mail, label: 'Email', value: social.email || 'dhruvpanchal.dev@gmail.com', href: getMailtoUrl(social.email || 'dhruvpanchal.dev@gmail.com') },
-                { icon: MapPin, label: 'Location', value: site.current_location || 'Surat, India', href: null },
-                { icon: Clock, label: 'Timezone', value: 'GMT+5:30 (IST)', href: null },
-              ].map(({ icon: Icon, label, value, href }) => (
+              {(() => {
+                const emailAddr = social.email || 'dhruvpanchal.dev@gmail.com';
+                const emailLink = getEmailLinkProps(emailAddr);
+                return [
+                  { icon: Mail, label: 'Email', value: emailAddr, href: emailLink.href, target: emailLink.target, rel: emailLink.rel },
+                  { icon: MapPin, label: 'Location', value: site.current_location || 'Surat, India', href: null, target: undefined, rel: undefined },
+                  { icon: Clock, label: 'Timezone', value: 'GMT+5:30 (IST)', href: null, target: undefined, rel: undefined },
+                ] as const;
+              })().map(({ icon: Icon, label, value, href, target, rel }) => (
                 <div key={label} className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center shrink-0">
                     <Icon size={15} className="text-muted-foreground" />
@@ -124,7 +128,7 @@ export default function Contact() {
                   <div>
                     <div className="text-xs text-muted-foreground">{label}</div>
                     {href ? (
-                      <a href={href} className="text-sm font-medium text-foreground hover:text-primary transition-colors link-underline">
+                      <a href={href} target={target} rel={rel} className="text-sm font-medium text-foreground hover:text-primary transition-colors link-underline">
                         {value}
                       </a>
                     ) : (

@@ -200,12 +200,12 @@ export default function Footer() {
         {/* Section 4: Social Links */}
         <div className="py-8 border-b border-border">
           <div className="flex flex-wrap items-center justify-center gap-4">
-            {socials.map(({ icon: Icon, href, label }) => (
+            {socials.map(({ icon: Icon, href, label, target, rel }) => (
               <a
                 key={label}
                 href={href}
-                target="_blank"
-                rel="noopener noreferrer"
+                target={target || '_blank'}
+                rel={rel || 'noopener noreferrer'}
                 className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                 aria-label={label}
               >

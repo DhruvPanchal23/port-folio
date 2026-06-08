@@ -191,13 +191,13 @@ export default function HomeClient({ featuredProjects }: { featuredProjects: Pro
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="mt-8 flex items-center gap-2"
               >
-                {socialLinks.map(({ icon: Icon, href, label }) => (
+                {socialLinks.map(({ icon: Icon, href, label, target, rel }) => (
                   <a
                     key={label}
                     href={href}
                     aria-label={label}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={target || '_blank'}
+                    rel={rel || 'noopener noreferrer'}
                     data-testid={`hero-social-${label.toLowerCase()}`}
                     className="group flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background/40 text-muted-foreground backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
                   >

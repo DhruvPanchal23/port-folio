@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Mail, Linkedin, Github, MapPin } from 'lucide-react';
 import { usePortfolioSettingsContext } from '@/components/providers/PortfolioSettingsProvider';
 import ResumeDownloadLink from '@/components/ResumeDownloadLink';
-import { getMailtoUrl } from '@/lib/portfolio-settings';
+import { getEmailLinkProps } from '@/lib/portfolio-settings';
 import type { ResumeData } from '@/lib/types/resume';
 
 export default function ResumeClient({ resumeData }: { resumeData: ResumeData }) {
@@ -180,7 +180,7 @@ export default function ResumeClient({ resumeData }: { resumeData: ResumeData })
                 {site.current_location}
               </span>
               {social.email && (
-                <a href={getMailtoUrl(social.email)} className="flex items-center gap-1 hover:text-foreground transition-colors">
+                <a {...getEmailLinkProps(social.email)} className="flex items-center gap-1 hover:text-foreground transition-colors">
                   <Mail size={14} />
                   {social.email}
                 </a>

@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { submitContactForm } from '@/lib/submissions';
 import { usePortfolioSettingsContext } from '@/components/providers/PortfolioSettingsProvider';
+import { getEmailLinkProps } from '@/lib/portfolio-settings';
 
 export default function ConnectClient() {
   const { settings } = usePortfolioSettingsContext();
@@ -80,7 +81,7 @@ export default function ConnectClient() {
                   Surat, India
                 </div>
                 <a
-                  href={`mailto:${social.email || 'dhruvpanchal.dev@gmail.com'}`}
+                  {...getEmailLinkProps(social.email || 'dhruvpanchal.dev@gmail.com')}
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Mail size={14} />
