@@ -1,0 +1,202 @@
+﻿diff --git a/app/(site)/HomeClient.tsx b/app/(site)/HomeClient.tsx
+index 762b36d..e4c9629 100644
+--- a/app/(site)/HomeClient.tsx
++++ b/app/(site)/HomeClient.tsx
+@@ -22,6 +22,9 @@ import MultilingualWelcomeTicker from '@/components/hero/MultilingualWelcomeTick
+ import NowLiveCard from '@/components/hero/NowLiveCard';
+ import { getPrimarySocialLinks } from '@/lib/social-links';
+ import { useNowCard } from '@/hooks/useNowCard';
++import Work from '@/components/sections/Work';
++import type { ProjectRecord } from '@/lib/types/cms';
++import type { Project } from '@/lib/supabase';
+ 
+ const CSSGlobe = dynamic(() => import('@/components/3d/CSSGlobe'), { ssr: false });
+ 
+@@ -63,7 +66,7 @@ const SERVICES = [
+   },
+ ];
+ 
+-export default function HomeClient() {
++export default function HomeClient({ featuredProjects }: { featuredProjects: ProjectRecord[] }) {
+   const { settings } = usePortfolioSettingsContext();
+   const { site, social, profile } = settings;
+   const { config: nowConfig, items: nowItems } = useNowCard();
+@@ -92,6 +95,7 @@ export default function HomeClient() {
+       {/* ====================== HERO ====================== */}
+       <section
+         ref={heroRef}
++        id="hero"
+         className="relative overflow-hidden pt-28 pb-24 md:pt-36 md:pb-32"
+       >
+         {/* Parallax accent blobs */}
+@@ -245,7 +249,7 @@ export default function HomeClient() {
+       </section>
+ 
+       {/* ====================== SERVICES ====================== */}
+-      <section className="section-padding">
++      <section id="services" className="section-padding">
+         <div className="container-max">
+           <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 mb-16">
+             <div>
+@@ -290,8 +294,11 @@ export default function HomeClient() {
+         </div>
+       </section>
+ 
++      {/* ====================== FEATURED PROJECTS ====================== */}
++      <Work projects={featuredProjects as unknown as Project[]} />
++
+       {/* ====================== TECH STACK ====================== */}
+-      <section className="section-padding border-y border-border bg-muted/20">
++      <section id="tech" className="section-padding border-y border-border bg-muted/20">
+         <div className="container-max">
+           <div className="mb-12 max-w-2xl">
+             <div className="mb-4 flex items-center gap-3">
+diff --git a/app/(site)/blog/BlogClient.tsx b/app/(site)/blog/BlogClient.tsx
+index f1982f9..04c586a 100644
+--- a/app/(site)/blog/BlogClient.tsx
++++ b/app/(site)/blog/BlogClient.tsx
+@@ -56,7 +56,7 @@ export default function BlogClient({ posts }: { posts: BlogPostRecord[] }) {
+             {rest.map((post, i) => (
+               <motion.div key={post.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                 <Link href={`/blog/${post.slug}`} className="block glass rounded-2xl p-6 h-full hover:border-primary/40 border border-transparent transition-colors">
+-                  <div className="text-xs text-muted-foreground mb-2">{post.read_time} min ┬╖ {post.published_at ? new Date(post.published_at).toLocaleDateString() : ''}</div>
++                  <div className="text-xs text-muted-foreground mb-2" suppressHydrationWarning>{post.read_time} min ┬╖ {post.published_at ? new Date(post.published_at).toLocaleDateString() : ''}</div>
+                   <h3 className="font-display text-xl font-bold mb-2">{post.title}</h3>
+                   <p className="text-sm text-muted-foreground line-clamp-3">{post.excerpt}</p>
+                   {post.tags.length > 0 && (
+diff --git a/app/(site)/blog/[slug]/BlogPostClient.tsx b/app/(site)/blog/[slug]/BlogPostClient.tsx
+index 3d7d58b..728731f 100644
+--- a/app/(site)/blog/[slug]/BlogPostClient.tsx
++++ b/app/(site)/blog/[slug]/BlogPostClient.tsx
+@@ -13,7 +13,7 @@ export default function BlogPostClient({ post }: { post: BlogPostRecord }) {
+           <ArrowLeft size={16} /> Back to Blog
+         </Link>
+         <motion.header initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
+-          <div className="text-sm text-muted-foreground mb-4">
++          <div className="text-sm text-muted-foreground mb-4" suppressHydrationWarning>
+             {post.read_time} min read ┬╖ {post.published_at ? new Date(post.published_at).toLocaleDateString() : ''}
+           </div>
+           <h1 className="font-display text-4xl md:text-6xl font-bold mb-4">{post.title}</h1>
+diff --git a/app/(site)/page.tsx b/app/(site)/page.tsx
+index 530c426..a81bd3c 100644
+--- a/app/(site)/page.tsx
++++ b/app/(site)/page.tsx
+@@ -1,20 +1,27 @@
++import { fetchPublishedProjects } from '@/lib/cms-fetch';
+ import HomeClient from './HomeClient';
+ import type { Metadata } from 'next';
+ 
+ export const metadata: Metadata = {
+   title: 'Dhruv Panchal ΓÇö Full Stack Developer & Designer',
+-  description: 'Full-stack developer, graphic designer & creative technologist crafting digital experiences where engineering meets visual storytelling. Available for freelance projects.',
++  description:
++    'Full-stack developer, graphic designer & creative technologist crafting digital experiences where engineering meets visual storytelling. Available for freelance projects.',
+   alternates: {
+     canonical: '/',
+   },
+   openGraph: {
+     type: 'website',
+     title: 'Dhruv Panchal ΓÇö Full Stack Developer & Designer',
+-    description: 'Full-stack developer, graphic designer & creative technologist crafting digital experiences where engineering meets visual storytelling.',
++    description:
++      'Full-stack developer, graphic designer & creative technologist crafting digital experiences where engineering meets visual storytelling.',
+     url: '/',
+   },
+ };
+ 
+-export default function HomePage() {
+-  return <HomeClient />;
++export const revalidate = 0;
++
++export default async function HomePage() {
++  const projects = await fetchPublishedProjects();
++  const featuredProjects = projects.filter((p) => p.featured);
++  return <HomeClient featuredProjects={featuredProjects} />;
+ }
+diff --git a/app/(site)/work/page.tsx b/app/(site)/work/page.tsx
+index 7b1d72a..c921d39 100644
+--- a/app/(site)/work/page.tsx
++++ b/app/(site)/work/page.tsx
+@@ -16,7 +16,7 @@ export const metadata: Metadata = {
+   },
+ };
+ 
+-export const revalidate = 300;
++export const revalidate = 0;
+ 
+ export default async function WorkPage() {
+   const projects = await fetchPublishedProjects();
+diff --git a/components/Footer.tsx b/components/Footer.tsx
+index 666db54..6422aac 100644
+--- a/components/Footer.tsx
++++ b/components/Footer.tsx
+@@ -227,7 +227,7 @@ export default function Footer() {
+           <p className="text-xs text-muted-foreground mb-1">
+             Current Version: {site.current_version} | Last Updated: {site.last_updated}
+           </p>
+-          <p className="text-xs text-muted-foreground">
++          <p className="text-xs text-muted-foreground" suppressHydrationWarning>
+             ┬⌐ {year} {profile.name} ΓÇó {site.copyright_text}
+           </p>
+         </div>
+diff --git a/components/Navigation.tsx b/components/Navigation.tsx
+index 930e91b..c218ee8 100644
+--- a/components/Navigation.tsx
++++ b/components/Navigation.tsx
+@@ -32,10 +32,10 @@ export default function Navigation() {
+   const [activeSection, setActiveSection] = useState('');
+   const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
+ 
+-  const isMac =
+-    typeof navigator !== 'undefined' && /Mac|iPhone|iPod|iPad/i.test(navigator.platform);
++  const [isMac, setIsMac] = useState(false);
+ 
+   useEffect(() => {
++    setIsMac(/Mac|iPhone|iPod|iPad/i.test(navigator.platform));
+     const handleScroll = () => setScrolled(window.scrollY > 40);
+     window.addEventListener('scroll', handleScroll, { passive: true });
+     return () => window.removeEventListener('scroll', handleScroll);
+diff --git a/components/SiteCommandMenu.tsx b/components/SiteCommandMenu.tsx
+index 58d721b..5defeaf 100644
+--- a/components/SiteCommandMenu.tsx
++++ b/components/SiteCommandMenu.tsx
+@@ -62,8 +62,11 @@ export default function SiteCommandMenu() {
+   const inputRef = useRef<HTMLInputElement>(null);
+   const router = useRouter();
+ 
+-  const isMac =
+-    typeof navigator !== 'undefined' && /Mac|iPhone|iPod|iPad/i.test(navigator.platform);
++  const [isMac, setIsMac] = useState(false);
++
++  useEffect(() => {
++    setIsMac(/Mac|iPhone|iPod|iPad/i.test(navigator.platform));
++  }, []);
+ 
+   useEffect(() => {
+     fetchEnabledCommandItems().then((items) => {
+diff --git a/components/sections/Blog.tsx b/components/sections/Blog.tsx
+index c704254..bab980e 100644
+--- a/components/sections/Blog.tsx
++++ b/components/sections/Blog.tsx
+@@ -69,7 +69,7 @@ function PostCard({ post, index }: { post: BlogPost; index: number }) {
+             {post.read_time} min read
+           </span>
+           <span>┬╖</span>
+-          <span>{new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
++          <span suppressHydrationWarning>{new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+         </div>
+ 
+         <h3 className="font-display text-base font-bold text-foreground mb-2 group-hover:text-primary transition-colors leading-snug">
+diff --git a/lib/structured-data.ts b/lib/structured-data.ts
+index 61db504..2dd8410 100644
+--- a/lib/structured-data.ts
++++ b/lib/structured-data.ts
+@@ -49,7 +49,7 @@ export const profilePageSchema = {
+   '@context': 'https://schema.org',
+   '@type': 'ProfilePage',
+   dateCreated: '2024-01-01T00:00:00+00:00',
+-  dateModified: new Date().toISOString(),
++  dateModified: '2026-06-07T12:00:00+00:00',
+   mainEntity: personSchema,
+ };
+ 

@@ -32,10 +32,10 @@ export default function Navigation() {
   const [activeSection, setActiveSection] = useState('');
   const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
 
-  const isMac =
-    typeof navigator !== 'undefined' && /Mac|iPhone|iPod|iPad/i.test(navigator.platform);
+  const [isMac, setIsMac] = useState(false);
 
   useEffect(() => {
+    setIsMac(/Mac|iPhone|iPod|iPad/i.test(navigator.platform));
     const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);

@@ -13,7 +13,7 @@ export default function BlogPostClient({ post }: { post: BlogPostRecord }) {
           <ArrowLeft size={16} /> Back to Blog
         </Link>
         <motion.header initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-          <div className="text-sm text-muted-foreground mb-4">
+          <div className="text-sm text-muted-foreground mb-4" suppressHydrationWarning>
             {post.read_time} min read · {post.published_at ? new Date(post.published_at).toLocaleDateString() : ''}
           </div>
           <h1 className="font-display text-4xl md:text-6xl font-bold mb-4">{post.title}</h1>

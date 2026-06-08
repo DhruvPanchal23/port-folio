@@ -62,8 +62,11 @@ export default function SiteCommandMenu() {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const isMac =
-    typeof navigator !== 'undefined' && /Mac|iPhone|iPod|iPad/i.test(navigator.platform);
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    setIsMac(/Mac|iPhone|iPod|iPad/i.test(navigator.platform));
+  }, []);
 
   useEffect(() => {
     fetchEnabledCommandItems().then((items) => {

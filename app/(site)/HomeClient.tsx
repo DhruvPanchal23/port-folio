@@ -22,6 +22,9 @@ import MultilingualWelcomeTicker from '@/components/hero/MultilingualWelcomeTick
 import NowLiveCard from '@/components/hero/NowLiveCard';
 import { getPrimarySocialLinks } from '@/lib/social-links';
 import { useNowCard } from '@/hooks/useNowCard';
+import Work from '@/components/sections/Work';
+import type { ProjectRecord } from '@/lib/types/cms';
+import type { Project } from '@/lib/supabase';
 
 const CSSGlobe = dynamic(() => import('@/components/3d/CSSGlobe'), { ssr: false });
 
@@ -63,7 +66,7 @@ const SERVICES = [
   },
 ];
 
-export default function HomeClient() {
+export default function HomeClient({ featuredProjects }: { featuredProjects: ProjectRecord[] }) {
   const { settings } = usePortfolioSettingsContext();
   const { site, social, profile } = settings;
   const { config: nowConfig, items: nowItems } = useNowCard();
@@ -92,6 +95,7 @@ export default function HomeClient() {
       {/* ====================== HERO ====================== */}
       <section
         ref={heroRef}
+        id="hero"
         className="relative overflow-hidden pt-28 pb-24 md:pt-36 md:pb-32"
       >
         {/* Parallax accent blobs */}
@@ -245,7 +249,7 @@ export default function HomeClient() {
       </section>
 
       {/* ====================== SERVICES ====================== */}
-      <section className="section-padding">
+      <section id="services" className="section-padding">
         <div className="container-max">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 mb-16">
             <div>
@@ -290,8 +294,11 @@ export default function HomeClient() {
         </div>
       </section>
 
+      {/* ====================== FEATURED PROJECTS ====================== */}
+      <Work projects={featuredProjects as unknown as Project[]} />
+
       {/* ====================== TECH STACK ====================== */}
-      <section className="section-padding border-y border-border bg-muted/20">
+      <section id="tech" className="section-padding border-y border-border bg-muted/20">
         <div className="container-max">
           <div className="mb-12 max-w-2xl">
             <div className="mb-4 flex items-center gap-3">

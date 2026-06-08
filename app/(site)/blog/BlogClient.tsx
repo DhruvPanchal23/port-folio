@@ -56,7 +56,7 @@ export default function BlogClient({ posts }: { posts: BlogPostRecord[] }) {
             {rest.map((post, i) => (
               <motion.div key={post.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
                 <Link href={`/blog/${post.slug}`} className="block glass rounded-2xl p-6 h-full hover:border-primary/40 border border-transparent transition-colors">
-                  <div className="text-xs text-muted-foreground mb-2">{post.read_time} min · {post.published_at ? new Date(post.published_at).toLocaleDateString() : ''}</div>
+                  <div className="text-xs text-muted-foreground mb-2" suppressHydrationWarning>{post.read_time} min · {post.published_at ? new Date(post.published_at).toLocaleDateString() : ''}</div>
                   <h3 className="font-display text-xl font-bold mb-2">{post.title}</h3>
                   <p className="text-sm text-muted-foreground line-clamp-3">{post.excerpt}</p>
                   {post.tags.length > 0 && (

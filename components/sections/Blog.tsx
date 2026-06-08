@@ -69,7 +69,7 @@ function PostCard({ post, index }: { post: BlogPost; index: number }) {
             {post.read_time} min read
           </span>
           <span>·</span>
-          <span>{new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+          <span suppressHydrationWarning>{new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
         </div>
 
         <h3 className="font-display text-base font-bold text-foreground mb-2 group-hover:text-primary transition-colors leading-snug">

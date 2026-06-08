@@ -227,7 +227,7 @@ export default function Footer() {
           <p className="text-xs text-muted-foreground mb-1">
             Current Version: {site.current_version} | Last Updated: {site.last_updated}
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground" suppressHydrationWarning>
             © {year} {profile.name} • {site.copyright_text}
           </p>
         </div>
