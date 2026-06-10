@@ -120,7 +120,7 @@ INSERT INTO portfolio_settings (key, value) VALUES
     '{
       "current_version": "1.0",
       "last_updated": "July 2025",
-      "copyright_text": "Crafted with Coffee, Playlists & Curiosity.",
+      "copyright_text": "Crafted with Monster, Playlists & Curiosity.",
       "footer_content": "Explore, experiment && say hello",
       "availability_status": "Available for select projects · Feb 2026",
       "current_location": "Surat, IN",

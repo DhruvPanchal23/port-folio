@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import {
-  Coffee,
+  Zap,
   ArrowUpRight,
   FileText,
   MessageSquare,
@@ -218,9 +218,9 @@ export default function LinksClient() {
           <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <Coffee size={14} className="text-primary" />
+                <Zap size={14} className="text-primary" />
                 <span className="font-mono-custom text-xs uppercase tracking-wider text-muted-foreground">
-                  Coffee&apos;s on me
+                  Monster&apos;s on me
                 </span>
               </div>
               <h3 className="font-display text-2xl md:text-3xl font-bold text-foreground">

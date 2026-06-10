@@ -8,7 +8,6 @@ import {
   Mail,
   MapPin,
   Clock,
-  Coffee,
   Sparkles,
   Code2,
   Zap,
@@ -180,7 +179,7 @@ export default function HomeClient({ featuredProjects }: { featuredProjects: Pro
                   <Clock size={12} className="text-primary" /> GMT+5:30
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Coffee size={12} className="text-primary" /> Powered by filter coffee
+                  <Zap size={12} className="text-primary" /> Powered by Monster Energy
                 </span>
               </motion.div>
 

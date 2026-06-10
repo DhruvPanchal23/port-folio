@@ -50,7 +50,7 @@ export const DEFAULT_SOCIAL: SocialSettings = {
 export const DEFAULT_SITE: SiteSettings = {
   current_version: '1.0',
   last_updated: 'July 2025',
-  copyright_text: 'Crafted with Coffee, Playlists & Curiosity.',
+  copyright_text: 'Crafted with Monster, Playlists & Curiosity.',
   footer_content: 'Explore, experiment && say hello',
   availability_status: 'Available for select projects · Feb 2026',
   current_location: 'Surat, IN',

@@ -203,8 +203,8 @@ BEGIN
 
     INSERT INTO engine_room_sections (title, icon, section_type, sort_order, visible, featured, metadata)
     VALUES (
-      'Powered by Coffee', 'Coffee', 'coffee', 6, true, false,
-      '{"line1":"∞ cups consumed and counting...","line2":"Because great code doesn''t write itself at 3 AM ☕"}'::jsonb
+      'Powered by Monster', 'Zap', 'coffee', 6, true, false,
+      '{"line1":"∞ cans consumed and counting...","line2":"Because great code doesn''t write itself at 3 AM ⚡"}'::jsonb
     );
   END IF;
 END $$;

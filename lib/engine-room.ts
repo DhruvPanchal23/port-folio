@@ -10,8 +10,8 @@ import type {
 } from '@/lib/types/engine-room';
 import { engineRoomPageConfigSchema } from '@/lib/validators/engine-room';
 import {
+  Zap,
   Code2,
-  Coffee,
   Headphones,
   Monitor,
   Palette,
@@ -34,10 +34,10 @@ export const DEFAULT_ENGINE_ROOM_CONFIG: EngineRoomPageConfig = {
 };
 
 export const ENGINE_ROOM_ICON_OPTIONS = [
+  'Zap',
   'Code2',
   'Palette',
   'Monitor',
-  'Coffee',
   'Headphones',
   'Terminal',
   'Chrome',
@@ -46,10 +46,10 @@ export const ENGINE_ROOM_ICON_OPTIONS = [
 ] as const;
 
 const ICON_MAP: Record<string, LucideIcon> = {
+  Zap,
   Code2,
   Palette,
   Monitor,
-  Coffee,
   Headphones,
   Terminal,
   Chrome,

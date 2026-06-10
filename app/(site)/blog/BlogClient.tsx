@@ -16,7 +16,7 @@ export default function BlogClient({ posts }: { posts: BlogPostRecord[] }) {
         <div className="container-max max-w-4xl">
           <div className="mb-12">
             <h1 className="font-display text-5xl md:text-7xl font-bold mb-4">101 errors?</h1>
-            <p className="text-xl text-muted-foreground">Nah, just ideas brewing with a sip of coffee.</p>
+            <p className="text-xl text-muted-foreground">Nah, just ideas charging up with a can of Monster.</p>
           </div>
           <BlogEmptyState />
         </div>
@@ -29,7 +29,7 @@ export default function BlogClient({ posts }: { posts: BlogPostRecord[] }) {
       <div className="container-max max-w-4xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
           <h1 className="font-display text-5xl md:text-7xl font-bold mb-4">101 errors?</h1>
-          <p className="text-xl text-muted-foreground">Ideas brewing with a sip of coffee.</p>
+          <p className="text-xl text-muted-foreground">Ideas charging up with a can of Monster.</p>
         </motion.div>
 
         <div className="space-y-8">

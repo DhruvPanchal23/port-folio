@@ -403,7 +403,7 @@ From scalable web applications and AI-powered solutions to visual content and di
 
 <div align="center">
 
-### Built with curiosity, creativity, and countless cups of coffee ☕
+### Built with curiosity, creativity, and more cans of Monster than I'd like to admit ⚡
 
 **© Dhruv Panchal**
 

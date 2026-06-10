@@ -4,14 +4,14 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Blog',
-  description: 'Ideas brewing with a sip of coffee. Tech thoughts, design principles, and developer life.',
+  description: 'Ideas charging up with a can of Monster. Tech thoughts, design principles, and developer life.',
   alternates: {
     canonical: '/blog',
   },
   openGraph: {
     type: 'website',
     title: 'Blog | Dhruv Panchal',
-    description: 'Ideas brewing with a sip of coffee. Tech thoughts, design principles, and developer life.',
+    description: 'Ideas charging up with a can of Monster. Tech thoughts, design principles, and developer life.',
     url: '/blog',
   },
 };

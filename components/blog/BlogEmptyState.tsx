@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 
 const STATUS_MESSAGES = [
-  'Brewing ideas...',
+  'Charging up ideas...',
   'Writing drafts...',
   'Collecting insights...',
   'Debugging thoughts...',
@@ -14,7 +14,7 @@ const STATUS_MESSAGES = [
 ];
 
 const STATS = [
-  { value: '∞', label: 'Cups of coffee consumed' },
+  { value: '∞', label: 'Cans of Monster consumed' },
   { value: '101+', label: 'Ideas in the pipeline' },
   { value: 'Soon™', label: 'Launch timeline' },
 ];
@@ -81,7 +81,7 @@ export default function BlogEmptyState() {
 
         <div className="space-y-4 text-muted-foreground leading-relaxed lg:pt-8">
           <p>
-            I&apos;m brewing up some thoughtful content about development, design, and the beautiful
+            I&apos;m building thoughtful content about development, design, AI, and the beautiful
             chaos of creating digital experiences.
           </p>
           <p>

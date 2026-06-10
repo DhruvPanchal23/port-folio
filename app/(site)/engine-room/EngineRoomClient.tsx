@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Coffee, Headphones } from 'lucide-react';
+import { Zap, Headphones } from 'lucide-react';
 import { useEngineRoom } from '@/hooks/useEngineRoom';
 import {
   getEngineRoomIcon,
@@ -123,7 +123,7 @@ function CoffeeBlock({ section }: { section: EngineRoomSection }) {
       viewport={{ once: true }}
       className="mt-16 glass rounded-2xl p-12 text-center"
     >
-      <Coffee className="h-16 w-16 text-primary mx-auto mb-4 animate-pulse" />
+      <Zap className="h-16 w-16 text-primary mx-auto mb-4 animate-pulse" />
       <h2 className="font-display text-3xl font-bold text-foreground mb-4">{section.title}</h2>
       {meta.line1 ? (
         <p className="text-lg text-muted-foreground mb-2">{meta.line1}</p>

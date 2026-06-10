@@ -87,7 +87,7 @@ export default function PortfolioSiteSettingsTab() {
             <SettingsInput
               value={site.copyright_text}
               onChange={(e) => updateField('copyright_text', e.target.value)}
-              placeholder="Crafted with Coffee, Playlists & Curiosity."
+              placeholder="Crafted with Monster, Playlists & Curiosity."
             />
           </SettingsField>
         </SettingsFormCard>

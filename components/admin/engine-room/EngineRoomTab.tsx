@@ -526,7 +526,7 @@ export default function EngineRoomTab() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-semibold text-foreground text-sm">Sections</h3>
-              <p className="text-xs text-muted-foreground">Tool categories, listening block, coffee section, and more.</p>
+              <p className="text-xs text-muted-foreground">Tool categories, listening block, Monster section, and more.</p>
             </div>
             <button
               onClick={() => {
