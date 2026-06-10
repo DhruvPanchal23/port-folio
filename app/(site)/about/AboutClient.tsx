@@ -197,7 +197,7 @@ export default function AboutClient() {
               {
                 title: 'Proficiency',
                 subtitle: 'Two freelancers in one',
-                description: 'Full-stack development & UI/UX design expertise'
+                description: 'Full-stack development & Graphic design expertise'
               },
               {
                 title: 'Satisfaction',
